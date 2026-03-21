@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onomatopeyas en Guaraní</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: Arial, sans-serif;
+    background: #1a2a4a;
+    min-height: 100vh;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white; border-radius: 16px; padding: 26px;
+    width: 100%; max-width: 640px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3); margin-top: 10px;
+  }
+  a.back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; background: #1a2a4a; color: white;
+    border: none; border-radius: 8px; font-size: 12px;
+    cursor: pointer; margin-bottom: 14px; text-decoration: none;
+  }
+  a.back-btn:hover { background: #2c3e6a; }
+  h1 { font-size: 18px; color: #1a2a4a; text-align: center; margin-bottom: 5px; }
+  .subtitle { text-align: center; font-size: 12px; color: #888; margin-bottom: 14px; }
+
+  /* descripción */
+  .descripcion {
+    background: #eaf4fb; border-left: 4px solid #2980b9;
+    padding: 12px 15px; border-radius: 8px; margin-bottom: 18px;
+    font-size: 13px; color: #1a3a5a; line-height: 1.6;
+  }
+  .descripcion strong { color: #1565c0; }
+
+  /* nivel badge */
+  .nivel-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .nivel-badge {
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 13px; font-weight: bold;
+  }
+  .nivel-1 { background: #e8f5e9; color: #2e7d32; border: 2px solid #a5d6a7; }
+  .nivel-2 { background: #fff8e1; color: #e65100; border: 2px solid #ffcc80; }
+  .nivel-3 { background: #fce4ec; color: #880e4f; border: 2px solid #f48fb1; }
+  .nivel-title { font-size: 15px; color: #1a2a4a; font-weight: bold; }
+  .instruccion {
+    background: #f7f9fc; border: 1px dashed #2980b9;
+    padding: 9px 13px; border-radius: 7px;
+    font-size: 13px; color: #2c3e50; margin-bottom: 16px;
+  }
+
+  /* palabras grid */
+  .palabras-grid {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 18px; justify-content: center;
+  }
+  .palabra-btn {
+    padding: 10px 16px; border: 2px solid #dce3ed;
+    border-radius: 10px; background: #f7f9fc;
+    font-size: 15px; cursor: pointer; font-family: Georgia, serif;
+    transition: all 0.2s; color: #2c3e50; min-width: 110px;
+    text-align: center;
+  }
+  .palabra-btn:hover:not(.bloqueada) { background: #eaf4fb; border-color: #2980b9; }
+  .palabra-btn.seleccionada { background: #d6eaf8; border-color: #2980b9; color: #1a2a4a; font-weight: bold; transform: scale(1.04); }
+  .palabra-btn.correcto    { background: #d5f5e3; border-color: #27ae60; color: #1a7a40; font-weight: bold; cursor: default; }
+  .palabra-btn.falso-pos   { background: #fadbd8; border-color: #e74c3c; color: #a93226; font-weight: bold; cursor: default; }
+  .palabra-btn.perdido     { background: #fef9e7; border-color: #f39c12; color: #7d6608; font-weight: bold; cursor: default; }
+  .palabra-btn.bloqueada   { cursor: default; }
+  .palabra-btn .traduccion { display: block; font-size: 10px; color: #888; margin-top: 2px; font-family: Arial; font-style: italic; }
+
+  /* feedback */
+  .feedback {
+    padding: 10px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: bold; text-align: center;
+    margin-bottom: 14px; display: none;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok   { background: #d5f5e3; color: #1a7a40; }
+  .feedback.fail { background: #fadbd8; color: #a93226; }
+  .feedback.info { background: #fff9c4; color: #7d6608; }
+
+  /* botones acción */
+  .btn-row { display: flex; gap: 10px; }
+  .btn-verificar {
+    flex: 2; padding: 13px; background: #2980b9; color: white;
+    border: none; border-radius: 10px; font-size: 15px;
+    font-weight: bold; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-verificar:hover { background: #2471a3; }
+  .btn-reintentar {
+    flex: 1; padding: 13px; background: #e67e22; color: white;
+    border: none; border-radius: 10px; font-size: 14px;
+    font-weight: bold; cursor: pointer; display: none;
+  }
+  .btn-reintentar:hover { background: #ca6f1e; }
+  .btn-siguiente {
+    width: 100%; padding: 14px; background: #27ae60; color: white;
+    border: none; border-radius: 10px; font-size: 16px;
+    font-weight: bold; cursor: pointer; display: none; margin-top: 10px;
+  }
+  .btn-siguiente:hover { background: #219150; }
+
+  /* progreso */
+  .progreso { display: flex; gap: 6px; justify-content: center; margin-bottom: 18px; }
+  .prog-dot {
+    width: 32px; height: 8px; border-radius: 4px;
+    background: #e0e0e0; transition: background 0.4s;
+  }
+  .prog-dot.done   { background: #27ae60; }
+  .prog-dot.active { background: #2980b9; }
+
+  /* pantalla final */
+  #pantalla-final { display: none; text-align: center; padding: 20px 0; }
+  #pantalla-final .trophy { font-size: 64px; margin-bottom: 12px; }
+  #pantalla-final h2 { font-size: 22px; color: #1a2a4a; margin-bottom: 10px; }
+  #pantalla-final p { font-size: 15px; color: #555; margin-bottom: 20px; line-height: 1.6; }
+  .mensaje-final {
+    background: linear-gradient(135deg, #d5f5e3, #d6eaf8);
+    border-radius: 12px; padding: 18px 20px;
+    font-size: 16px; font-weight: bold; color: #1a3a5a;
+    border: 2px solid #27ae60; margin-bottom: 20px;
+  }
+  .btn-reset {
+    padding: 12px 28px; background: #2980b9; color: white;
+    border: none; border-radius: 10px; font-size: 15px;
+    font-weight: bold; cursor: pointer;
+  }
+  .leyenda {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    font-size: 11px; color: #666; margin-top: 12px; justify-content: center;
+  }
+  .leg { display: flex; align-items: center; gap: 4px; }
+  .leg-dot { width: 12px; height: 12px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">&#8592; Volver al inicio</a>
+
+  <h1>&#127767; Identificar Palabras Onomatopéyicas</h1>
+  <p class="subtitle">Guaraní — Ejercicio interactivo</p>
+
+  <div class="descripcion">
+    Las <strong>onomatopeyas</strong> son palabras que imitan sonidos reales de la naturaleza,
+    animales, objetos o acciones humanas. En guaraní, muchas palabras tienen su origen
+    en la imitación directa del sonido que representan.
+  </div>
+
+  <!-- progreso de niveles -->
+  <div class="progreso">
+    <div class="prog-dot active" id="dot-1"></div>
+    <div class="prog-dot"        id="dot-2"></div>
+    <div class="prog-dot"        id="dot-3"></div>
+  </div>
+
+  <!-- zona del juego -->
+  <div id="zona-juego">
+    <div class="nivel-header">
+      <span class="nivel-badge nivel-1" id="nivel-badge">Nivel 1 — Fácil</span>
+      <span class="nivel-title" id="nivel-titulo">Identificá las onomatopeyas</span>
+    </div>
+    <div class="instruccion" id="instruccion">
+      &#128073; Hacé <strong>clic</strong> sobre las palabras que creas que son
+      <strong>onomatopéyicas</strong>, luego presioná <strong>"Verificar"</strong>.
+    </div>
+
+    <div class="palabras-grid" id="palabras-grid"></div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <div class="btn-row">
+      <button class="btn-verificar" id="btn-verificar" onclick="verificar()">&#10003; Verificar respuestas</button>
+      <button class="btn-reintentar" id="btn-reintentar" onclick="reintentar()">&#8635; Reintentar</button>
+    </div>
+    <button class="btn-siguiente" id="btn-siguiente" onclick="siguienteNivel()">Siguiente nivel &#8594;</button>
+
+    <div class="leyenda">
+      <div class="leg"><div class="leg-dot" style="background:#d5f5e3;border:1px solid #27ae60"></div> Onomatopeya correcta</div>
+      <div class="leg"><div class="leg-dot" style="background:#fadbd8;border:1px solid #e74c3c"></div> No es onomatopeya</div>
+      <div class="leg"><div class="leg-dot" style="background:#fef9e7;border:1px solid #f39c12"></div> Onomatopeya no marcada</div>
+    </div>
+  </div>
+
+  <!-- pantalla final -->
+  <div id="pantalla-final">
+    <div class="trophy">&#127942;</div>
+    <h2>¡Nivel 3 completado!</h2>
+    <div class="mensaje-final">
+      &#127775; ¡Estás preparado para esta competencia del examen!! &#127775;<br>¡Suerte!
+    </div>
+    <p>Dominás el reconocimiento de onomatopeyas en guaraní.<br>Ya podés enfrentar el examen con confianza.</p>
+    <button class="btn-reset" onclick="reiniciar()">&#8635; Volver a jugar</button>
+  </div>
+</div>
+
+<script>
+const niveles = [
+  {
+    nivel: 1, label: "Nivel 1 — Fácil", badge: "nivel-1",
+    palabras: [
+      { w: "pororó",   tr: "crepitar / palomitas",  ono: true  },
+      { w: "ava",      tr: "persona",               ono: false },
+      { w: "kororoti", tr: "trueno",                ono: true  },
+      { w: "porã",     tr: "hermoso/a",             ono: false },
+      { w: "syryry",   tr: "fluir / deslizarse",    ono: true  },
+      { w: "mba'e",    tr: "cosa",                  ono: false },
+      { w: "yvy",      tr: "tierra",                ono: false },
+      { w: "tĩ",       tr: "sonido agudo / zumbido",ono: true  },
+    ]
+  },
+  {
+    nivel: 2, label: "Nivel 2 — Medio", badge: "nivel-2",
+    palabras: [
+      { w: "mberu",   tr: "mosca / mosquito",   ono: false },
+      { w: "yvoty",   tr: "flor",               ono: false },
+      { w: "tuku",    tr: "saltamontes",         ono: false },
+      { w: "mitã",    tr: "niño/a",             ono: false },
+      { w: "tyryry",  tr: "sonido de agua",     ono: true  },
+      { w: "ka'a",    tr: "hierba / monte",     ono: false },
+      { w: "jaku",    tr: "pava del monte",     ono: false },
+      { w: "pytã",    tr: "rojo",               ono: false },
+      { w: "yvyra",   tr: "árbol",              ono: false },
+      { w: "kyryrỹ",  tr: "zumbido suave",      ono: true  },
+    ]
+  },
+  {
+    nivel: 3, label: "Nivel 3 — Difícil", badge: "nivel-3",
+    palabras: [
+      { w: "ñorõ",    tr: "siseo / serpiente",  ono: false },
+      { w: "opy",     tr: "casa / templo",      ono: false },
+      { w: "hovy",    tr: "azul / verde",       ono: false },
+      { w: "pepo",    tr: "ala (batir de alas)",ono: true  },
+      { w: "ñe'ẽ",   tr: "idioma / palabra",   ono: false },
+      { w: "guasu",   tr: "grande",             ono: false },
+      { w: "tatarã",  tr: "chisporroteo fuego", ono: true  },
+      { w: "arã",     tr: "futuro",             ono: false },
+      { w: "vai",     tr: "feo / malo",         ono: false },
+      { w: "sa'yju",  tr: "amarillo",           ono: false },
+    ]
+  }
+];
+
+let nivelActual = 0;
+let seleccionadas = new Set();
+let verificado = false;
+
+function renderNivel() {
+  const n = niveles[nivelActual];
+  seleccionadas = new Set();
+  verificado = false;
+
+  document.getElementById('nivel-badge').className = 'nivel-badge ' + n.badge;
+  document.getElementById('nivel-badge').textContent = n.label;
+  document.getElementById('nivel-titulo').textContent =
+    'Identificá las onomatopeyas del nivel ' + n.nivel;
+
+  // dots
+  for (let i = 1; i <= 3; i++) {
+    const d = document.getElementById('dot-' + i);
+    d.className = 'prog-dot' + (i - 1 < nivelActual ? ' done' : i - 1 === nivelActual ? ' active' : '');
+  }
+
+  const grid = document.getElementById('palabras-grid');
+  grid.innerHTML = '';
+  n.palabras.forEach((p, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'palabra-btn';
+    btn.id = 'pal-' + idx;
+    btn.innerHTML = p.w + '<span class="traduccion">' + p.tr + '</span>';
+    btn.onclick = () => toggleSeleccion(idx, btn);
+    grid.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+
+  document.getElementById('btn-verificar').style.display = 'block';
+  document.getElementById('btn-reintentar').style.display = 'none';
+  document.getElementById('btn-siguiente').style.display = 'none';
+}
+
+function toggleSeleccion(idx, btn) {
+  if (verificado) return;
+  if (seleccionadas.has(idx)) {
+    seleccionadas.delete(idx);
+    btn.classList.remove('seleccionada');
+  } else {
+    seleccionadas.add(idx);
+    btn.classList.add('seleccionada');
+  }
+}
+
+function verificar() {
+  if (verificado) return;
+  verificado = true;
+  const n = niveles[nivelActual];
+  let aciertos = 0, errores = 0, perdidos = 0;
+
+  n.palabras.forEach((p, idx) => {
+    const btn = document.getElementById('pal-' + idx);
+    btn.classList.remove('seleccionada');
+    btn.classList.add('bloqueada');
+    if (seleccionadas.has(idx)) {
+      if (p.ono) { btn.classList.add('correcto'); aciertos++; }
+      else        { btn.classList.add('falso-pos'); errores++; }
+    } else {
+      if (p.ono) { btn.classList.add('perdido'); perdidos++; }
+    }
+  });
+
+  const totalOno = n.palabras.filter(p => p.ono).length;
+  const fb = document.getElementById('feedback');
+
+  if (aciertos === totalOno && errores === 0) {
+    fb.className = 'feedback show ok';
+    fb.textContent = '✅ ¡Perfecto! Identificaste todas las onomatopeyas correctamente.';
+    document.getElementById('btn-verificar').style.display = 'none';
+    if (nivelActual < 2) {
+      document.getElementById('btn-siguiente').style.display = 'block';
+    } else {
+      setTimeout(() => mostrarFinal(), 1400);
+    }
+  } else {
+    fb.className = 'feedback show fail';
+    fb.textContent = '❌ ' + aciertos + ' de ' + totalOno + ' correctas. ' +
+      (errores > 0 ? errores + ' marcadas incorrectamente. ' : '') +
+      (perdidos > 0 ? perdidos + ' onomatopeya(s) sin marcar.' : '');
+    document.getElementById('btn-verificar').style.display = 'none';
+    document.getElementById('btn-reintentar').style.display = 'block';
+  }
+}
+
+function reintentar() {
+  renderNivel();
+}
+
+function siguienteNivel() {
+  nivelActual++;
+  renderNivel();
+}
+
+function mostrarFinal() {
+  document.getElementById('zona-juego').style.display = 'none';
+  document.getElementById('pantalla-final').style.display = 'block';
+  for (let i = 1; i <= 3; i++)
+    document.getElementById('dot-' + i).className = 'prog-dot done';
+}
+
+function reiniciar() {
+  nivelActual = 0;
+  document.getElementById('pantalla-final').style.display = 'none';
+  document.getElementById('zona-juego').style.display = 'block';
+  renderNivel();
+}
+
+renderNivel();
+</script>
+</body>
+</html>
