@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Dónde va el acento?</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: Arial, sans-serif; background: #1a2a4a;
+    min-height:100vh; display:flex; align-items:flex-start;
+    justify-content:center; padding:20px;
+  }
+  .container {
+    background:white; border-radius:16px; padding:24px;
+    width:100%; max-width:700px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.3); margin-top:10px;
+  }
+  a.back-btn {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:7px 13px; background:#1a2a4a; color:white;
+    border-radius:8px; font-size:12px; text-decoration:none; margin-bottom:14px;
+  }
+  a.back-btn:hover { background:#2c3e6a; }
+  h1 { font-size:18px; color:#1a2a4a; text-align:center; margin-bottom:3px; }
+  .guarani-title { font-size:13px; color:#2980b9; text-align:center; font-style:italic; margin-bottom:14px; }
+  .instruccion {
+    background:#eaf4fb; border-left:4px solid #2980b9;
+    padding:10px 14px; border-radius:7px;
+    font-size:13px; color:#1a3a5a; margin-bottom:16px; line-height:1.7;
+  }
+  /* PROGRESO */
+  .prog-wrap { margin-bottom:16px; }
+  .prog-bar {
+    background:#e0e0e0; border-radius:8px;
+    height:10px; overflow:hidden; margin-bottom:5px;
+  }
+  .prog-fill {
+    height:100%; width:0%; background:linear-gradient(90deg,#27ae60,#2ecc71);
+    border-radius:8px; transition:width 0.4s;
+  }
+  .prog-text { font-size:12px; color:#888; text-align:right; }
+  /* GRUPOS */
+  .grupo-label {
+    font-size:11px; font-weight:bold; color:#888;
+    text-transform:uppercase; letter-spacing:1px;
+    margin:16px 0 8px;
+  }
+  .fila { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:6px; }
+  /* TARJETA DE PALABRA */
+  .word-card {
+    background:#fafafa; border:2px solid #dce3ed;
+    border-radius:10px; padding:12px 14px;
+    display:inline-flex; flex-direction:column;
+    align-items:center; gap:6px;
+    transition: border-color 0.3s;
+  }
+  .word-card.done-card { border-color:#27ae60; background:#f0fff4; }
+  /* LETRAS */
+  .word-display { display:flex; align-items:center; gap:1px; }
+  .lv {
+    font-family: Georgia, serif; font-size:22px; color:#1a2a4a;
+    padding:2px 1px; border-radius:4px; line-height:1.2;
+  }
+  .lv.vowel {
+    cursor:pointer; color:#2980b9; font-weight:bold;
+    border-bottom:2px dotted #2980b9; transition:all 0.15s;
+  }
+  .lv.vowel:hover { background:#eaf4fb; transform:scale(1.15); }
+  .lv.nasal { color:#8e24aa; font-style:italic; cursor:default; }
+  .lv.correct { color:#27ae60; font-weight:bold; cursor:default; border-bottom:none; }
+  .lv.wrong { color:#e74c3c; animation:shake 0.4s; }
+  .lv.fixed { color:#1a2a4a; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)}
+  }
+  /* BOTÓN SIN TILDE */
+  .sin-tilde-btn {
+    font-size:11px; padding:4px 10px;
+    background:#f7f9fc; border:1px solid #bbb;
+    border-radius:14px; cursor:pointer; color:#555;
+    transition:all 0.2s;
+  }
+  .sin-tilde-btn:hover:not(:disabled) { background:#eaf4fb; border-color:#2980b9; color:#2980b9; }
+  .sin-tilde-btn.correct-btn { background:#d5f5e3; border-color:#27ae60; color:#1a7a40; font-weight:bold; }
+  .sin-tilde-btn.wrong-btn { background:#fadbd8; border-color:#e74c3c; color:#a93226; animation:shake 0.4s; }
+  /* LEYENDA */
+  .leyenda {
+    display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+    font-size:11px; color:#666; margin-top:16px; margin-bottom:12px;
+  }
+  .leg { display:flex; align-items:center; gap:4px; }
+  /* FEEDBACK */
+  .feedback {
+    padding:10px 14px; border-radius:8px; font-size:14px;
+    font-weight:bold; text-align:center; margin-top:14px;
+  }
+  .feedback.ok   { background:#d5f5e3; color:#1a7a40; }
+  .feedback.fail { background:#fadbd8; color:#a93226; }
+  .feedback.hint { background:#fff9c4; color:#7d6608; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">&#8592; Volver al inicio</a>
+  <h1>&#180; &#191;D&#243;nde va el acento?</h1>
+  <p class="guarani-title">Seleccion&#225; la vocal t&#243;nica en cada palabra guaraní</p>
+
+  <div class="instruccion">
+    &#128073; Hacé clic en la <strong>vocal azul</strong> que debe llevar la tilde (´).<br>
+    &#128075; Las <strong style="color:#8e24aa">vocales nasales</strong> (ã ẽ ĩ õ ũ ỹ) nunca llevan tilde.<br>
+    &#128073; Si una palabra <strong>no lleva tilde</strong>, hacé clic en el botón <em>"Sin tilde ✓"</em>.
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-text" id="prog-text">0 / 15 palabras completadas</div>
+  </div>
+
+  <div class="leyenda">
+    <div class="leg"><span style="color:#2980b9;font-weight:bold;font-size:14px;border-bottom:2px dotted #2980b9">a</span>&nbsp;Vocal oral — hacé clic</div>
+    <div class="leg"><span style="color:#8e24aa;font-style:italic;font-size:14px">ã</span>&nbsp;Vocal nasal — sin tilde</div>
+    <div class="leg"><span style="color:#27ae60;font-weight:bold;font-size:14px">á</span>&nbsp;¡Correcto!</div>
+  </div>
+
+  <div id="words-container"></div>
+
+  <div class="feedback hint" id="feedback">Hacé clic en la vocal que lleva la tilde acentual (´).</div>
+</div>
+
+<script>
+const ORAL  = new Set(['a','e','i','o','u','y','A','E','I','O','U','Y']);
+const NASAL = new Set(['\u00e3','\u1ebd','\u0129','\u00f5','\u0169','\u1ef9']);
+const ACC   = {
+  'a':'\u00e1','e':'\u00e9','i':'\u00ed','o':'\u00f3','u':'\u00fa','y':'\u00fd',
+  'A':'\u00c1','E':'\u00c9','I':'\u00cd','O':'\u00d3','U':'\u00da','Y':'\u00dd'
+};
+
+const WORDS = [
+  {g:0, base:"ava",                      tilde:0 },
+  {g:0, base:"oga",                      tilde:0 },
+  {g:0, base:"purahei",                  tilde:5 },
+  {g:0, base:"ara",                      tilde:0 },
+  {g:0, base:"yva",                      tilde:0 },
+  {g:0, base:"ype",                      tilde:0 },
+  {g:0, base:"ogapype",                  tilde:4 },
+  {g:1, base:"Ogakuera",                 tilde:5 },
+  {g:1, base:"mbo\u2019ehara",           tilde:6 },
+  {g:1, base:"tup\u00e3mba\u2019ejara",  tilde:10},
+  {g:2, base:"pirapirere",               tilde:7 },
+  {g:2, base:"o\u00f1embopirapireveta",  tilde:15},
+  {g:3, base:"Sapy\u2019ante",           tilde:5 },
+  {g:3, base:"aravopapaha",              tilde:-1},
+  {g:3, base:"o\u00f1angarekova",        tilde:9 }
+];
+
+const G_LABELS = [
+  "Grupo 1 — Tónica antes del final",
+  "Grupo 2 — Palabras compuestas",
+  "Grupo 3 — Palabras largas",
+  "Grupo 4 — Frase: Sapy\'ánte aravopapaha oñangarekóva"
+];
+
+let done = new Set();
+
+function renderWords() {
+  const grps = [[],[],[],[]];
+  WORDS.forEach((w,wi) => grps[w.g].push(wi));
+  let html = '';
+  grps.forEach((list, gi) => {
+    html += `<p class="grupo-label">${G_LABELS[gi]}</p><div class="fila">`;
+    list.forEach(wi => {
+      const w = WORDS[wi];
+      const chars = [...w.base];
+      let disp = '';
+      chars.forEach((ch, ci) => {
+        if (ORAL.has(ch))
+          disp += `<span class="lv vowel" id="c${wi}_${ci}" onclick="clickChar(${wi},${ci})">${ch}</span>`;
+        else if (NASAL.has(ch))
+          disp += `<span class="lv nasal" title="Vocal nasal: no lleva tilde">${ch}</span>`;
+        else
+          disp += `<span class="lv fixed">${ch}</span>`;
+      });
+      const btn = w.tilde===-1
+        ? `<button class="sin-tilde-btn" id="nt${wi}" onclick="clickNoTilde(${wi})">Sin tilde &#10003;</button>`
+        : '';
+      html += `<div class="word-card" id="wc${wi}"><div class="word-display">${disp}</div>${btn}</div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('words-container').innerHTML = html;
+}
+
+function clickChar(wi, ci) {
+  if (done.has(wi)) return;
+  const w = WORDS[wi];
+  const chars = [...w.base];
+  const ch = chars[ci];
+  const span = document.getElementById(`c${wi}_${ci}`);
+  const fb = document.getElementById('feedback');
+
+  if (w.tilde === -1) {
+    shake(span); fb.className='feedback fail';
+    fb.textContent='❌ Esta palabra no lleva tilde. Hacé clic en "Sin tilde ✓".';
+    return;
+  }
+  if (ci === w.tilde) {
+    span.textContent = ACC[ch]||ch;
+    span.className = 'lv correct';
+    span.onclick = null;
+    markDone(wi);
+    fb.className='feedback ok';
+    fb.textContent=`✅ ¡Correcto! La tilde va en "${ACC[ch]||ch}".`;
+  } else {
+    shake(span); fb.className='feedback fail';
+    fb.textContent='❌ Esa vocal no es la tónica. Buscá la vocal de mayor intensidad.';
+  }
+}
+
+function clickNoTilde(wi) {
+  if (done.has(wi)) return;
+  const w = WORDS[wi];
+  const btn = document.getElementById(`nt${wi}`);
+  const fb = document.getElementById('feedback');
+  if (w.tilde === -1) {
+    btn.classList.add('correct-btn'); btn.disabled=true; btn.textContent='✓ Sin tilde';
+    markDone(wi);
+    fb.className='feedback ok';
+    fb.textContent='✅ ¡Correcto! "aravopapaha" no lleva tilde — la vocal tónica está al final.';
+  } else {
+    btn.classList.add('wrong-btn');
+    setTimeout(()=>btn.classList.remove('wrong-btn'),900);
+    fb.className='feedback fail';
+    fb.textContent='❌ Esta palabra sí lleva tilde. Hacé clic en la vocal tónica (azul).';
+  }
+}
+
+function shake(el) {
+  el.classList.add('wrong');
+  setTimeout(()=>el.classList.remove('wrong'),500);
+}
+
+function markDone(wi) {
+  done.add(wi);
+  document.getElementById(`wc${wi}`).classList.add('done-card');
+  const total=WORDS.length, count=done.size;
+  document.getElementById('prog-text').textContent=`${count} / ${total} palabras completadas`;
+  document.getElementById('prog-fill').style.width=`${(count/total)*100}%`;
+  if (count===total) {
+    setTimeout(()=>{
+      document.getElementById('feedback').className='feedback ok';
+      document.getElementById('feedback').textContent=
+        '🏆 ¡Completaste todas las palabras! ¡Excelente manejo del acento en guaraní!';
+    },400);
+  }
+}
+
+renderWords();
+</script>
+</body>
+</html>

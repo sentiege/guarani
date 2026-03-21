@@ -102,10 +102,10 @@
   }
 
   /* ── CARDS ── */
-  .cards { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 22px; }
+  .cards { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 22px; }
   .card {
-    background: white; border-radius: 16px; padding: 26px 20px;
-    width: 200px; text-decoration: none; color: inherit;
+    background: white; border-radius: 16px; padding: 22px 18px;
+    width: 192px; text-decoration: none; color: inherit;
     box-shadow: 0 6px 24px rgba(0,0,0,0.25);
     transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
   }
@@ -116,6 +116,9 @@
   .card .tag { display: inline-block; padding: 3px 10px; border-radius: 14px; font-size: 11px; font-weight: bold; }
   .tag-blue   { background: #e3f2fd; color: #1565c0; }
   .tag-purple { background: #f3e5f5; color: #6a1b9a; }
+  .tag-green  { background: #e8f5e9; color: #2e7d32; }
+  .tag-orange { background: #fff3e0; color: #e65100; }
+  .tag-teal   { background: #e0f2f1; color: #00695c; }
   .footer {
     color: #4a6a8a; font-size: 11px; margin-top: 28px;
     line-height: 1.5; padding: 0 10px;
@@ -130,7 +133,7 @@
     3 herramientas de repaso instruidas por la <strong>Prof. Nery Fátima Benítez Ramírez</strong><br>
     para la Materia <strong>GUARANÍ I</strong>
   </p>
-  <div class="badge">3 herramientas disponibles</div>
+  <div class="badge">5 herramientas disponibles</div>
 
   <!-- ── ACORDEÓN 1: ARTÍCULOS ── -->
   <div class="accordion">
@@ -234,6 +237,11 @@
     </div>
   </div>
 
+  <!-- ── SEPARADOR ── -->
+  <div style="border-top: 2px dashed rgba(255,255,255,0.15); margin: 28px 0 24px; position:relative; text-align:center;">
+    <span style="background:#1a2a4a; color: rgba(255,255,255,0.4); font-size:11px; padding: 0 12px; position:relative; top:-10px; letter-spacing:1px; text-transform:uppercase;">Ejercicios interactivos</span>
+  </div>
+
   <!-- ── CARDS ── -->
   <div class="cards">
     <a class="card" href="quiz_ley4251_v2.html">
@@ -247,6 +255,24 @@
       <h2>Identificador de Palabras Guaraní</h2>
       <p>Clasificá palabras en nasales, orales o con digrama. 3 textos disponibles.</p>
       <span class="tag tag-purple">3 textos</span>
+    </a>
+    <a class="card" href="onomatopeyas_v2.html">
+      <div class="icon">&#127767;</div>
+      <h2>Identificar Palabras Onomatopéyicas</h2>
+      <p>3 niveles de dificultad. Encontrá las onomatopeyas entre las palabras.</p>
+      <span class="tag tag-green">3 niveles</span>
+    </a>
+    <a class="card" href="digramas_completar_v4.html">
+      <div class="icon">&#9999;&#65039;</div>
+      <h2>Aipuru Pundiekõi ha Amoimba</h2>
+      <p>Arrastrá los digramas y completá las 13 palabras en guaraní.</p>
+      <span class="tag tag-orange">13 palabras</span>
+    </a>
+    <a class="card" href="acento_guarani.html">
+      <div class="icon"><span style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:linear-gradient(135deg,#00897b,#26a69a);border-radius:50%;color:white;font-size:28px;font-weight:bold;font-family:Georgia,serif;line-height:1">&#180;</span></div>
+      <h2>¿Dónde va el acento?</h2>
+      <p>Seleccioná la vocal tónica en 15 palabras guaraní. Incluye vocales nasales.</p>
+      <span class="tag tag-teal">15 palabras</span>
     </a>
   </div>
 
