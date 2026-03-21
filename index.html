@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramienta de Repaso Guaraní</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    background: #1a2a4a;
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+  }
+  .container {
+    text-align: center;
+    width: 100%;
+    max-width: 680px;
+  }
+  .logo { font-size: 52px; margin-bottom: 10px; }
+  h1 { color: white; font-size: 26px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px; }
+  .subtitle { font-size: 13px; color: #a0b4cc; margin-bottom: 10px; line-height: 1.6; }
+  .subtitle strong { color: white; }
+  .badge {
+    display: inline-block; background: rgba(255,255,255,0.12);
+    color: #a0b4cc; font-size: 11px; padding: 3px 12px;
+    border-radius: 20px; margin-bottom: 22px;
+  }
+
+  /* ── DESPLEGABLES ── */
+  .accordion { margin-bottom: 12px; text-align: left; }
+  .acc-header {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 13px 18px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+    user-select: none;
+  }
+  .acc-header:hover { background: rgba(255,255,255,0.18); }
+  .acc-header .arrow { transition: transform 0.3s; font-size: 12px; }
+  .acc-header.open .arrow { transform: rotate(180deg); }
+  .acc-body {
+    display: none;
+    background: white;
+    border: 1px solid #dce3ed;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 18px 20px;
+    text-align: left;
+    font-size: 13px;
+    color: #2c3e50;
+    line-height: 1.7;
+  }
+  .acc-body.open { display: block; }
+
+  /* artículos */
+  .art-intro { 
+    background: #eaf4fb; border-left: 3px solid #2980b9;
+    padding: 8px 12px; border-radius: 5px; margin-bottom: 12px;
+    font-size: 12px; color: #1a5276; font-style: italic;
+  }
+  .art-list { list-style: none; padding: 0; }
+  .art-list li {
+    padding: 7px 10px; border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+  }
+  .art-list li:last-child { border-bottom: none; }
+  .art-list li span { color: #2980b9; font-weight: bold; margin-right: 6px; }
+
+  /* reglas */
+  .regla-bloque { margin-bottom: 18px; }
+  .regla-titulo {
+    font-weight: bold; color: #1a2a4a; font-size: 13px;
+    background: #f0f4ff; padding: 6px 10px; border-radius: 6px;
+    margin-bottom: 8px; border-left: 3px solid #2980b9;
+  }
+  .regla-body { font-size: 13px; line-height: 1.7; color: #333; padding: 0 4px; }
+  .regla-body p { margin-bottom: 6px; }
+  .regla-body .techapyra { 
+    font-style: italic; color: #6a1b9a;
+    background: #f9f0ff; padding: 4px 8px;
+    border-radius: 4px; display: block; margin: 4px 0;
+    font-size: 12px;
+  }
+  .alfabeto {
+    background: #f7f9fc; border: 1px solid #dce3ed;
+    border-radius: 8px; padding: 10px 14px;
+    font-family: Georgia, serif; font-size: 14px;
+    color: #1a2a4a; line-height: 1.9; margin: 8px 0;
+    letter-spacing: 1px;
+  }
+
+  /* ── CARDS ── */
+  .cards { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 22px; }
+  .card {
+    background: white; border-radius: 16px; padding: 26px 20px;
+    width: 200px; text-decoration: none; color: inherit;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+  }
+  .card:hover { transform: translateY(-5px); box-shadow: 0 12px 36px rgba(0,0,0,0.35); }
+  .card .icon { font-size: 40px; margin-bottom: 12px; }
+  .card h2 { font-size: 14px; color: #1a2a4a; margin-bottom: 7px; line-height: 1.4; }
+  .card p { font-size: 11px; color: #777; line-height: 1.5; margin-bottom: 14px; }
+  .card .tag { display: inline-block; padding: 3px 10px; border-radius: 14px; font-size: 11px; font-weight: bold; }
+  .tag-blue   { background: #e3f2fd; color: #1565c0; }
+  .tag-purple { background: #f3e5f5; color: #6a1b9a; }
+  .footer {
+    color: #4a6a8a; font-size: 11px; margin-top: 28px;
+    line-height: 1.5; padding: 0 10px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="logo">&#127798;</div>
+  <h1>Herramienta de Repaso Guaraní</h1>
+  <p class="subtitle">
+    3 herramientas de repaso instruidas por la <strong>Prof. Nery Fátima Benítez Ramírez</strong><br>
+    para la Materia <strong>GUARANÍ I</strong>
+  </p>
+  <div class="badge">3 herramientas disponibles</div>
+
+  <!-- ── ACORDEÓN 1: ARTÍCULOS ── -->
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      &#128220; Artículos importantes de la Ley 4251
+      <span class="arrow">&#9660;</span>
+    </div>
+    <div class="acc-body">
+      <div class="art-intro">
+        Estos son los <strong>15 artículos</strong> que la Prof. considera importante saber de la Ley 4251/11
+      </div>
+      <ul class="art-list">
+        <li><span>Art. 3º</span> De las lenguas oficiales</li>
+        <li><span>Art. 5º</span> De la promoción de las lenguas originarias</li>
+        <li><span>Art. 7º</span> De la no discriminación por razones Lingüísticas</li>
+        <li><span>Art. 8º</span> Del valor jurídico de las expresiones</li>
+        <li><span>Art. 9º</span> De los derechos lingüísticos individuales</li>
+        <li><span>Art. 10</span> Derechos lingüísticos colectivos nacionales</li>
+        <li><span>Art. 12</span> De la responsabilidad del Estado hacia los pueblos indígenas</li>
+        <li><span>Art. 14</span> De las leyes y demás disposiciones normativas</li>
+        <li><span>Art. 15</span> Del uso en el ámbito judicial</li>
+        <li><span>Art. 17</span> Del conocimiento de las dos lenguas oficiales para ocupar cargos públicos</li>
+        <li><span>Art. 18</span> De los documentos de identidad</li>
+        <li><span>Art. 21</span> Del respeto a la toponimia</li>
+        <li><span>Art. 26</span> De la alfabetización en lengua materna</li>
+        <li><span>Art. 28º</span> De la enseñanza de las lenguas oficiales</li>
+        <li><span>Art. 29</span> De las lenguas oficiales como instrumentos didácticos</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── ACORDEÓN 2: REGLAS ── -->
+  <div class="accordion">
+    <div class="acc-header" onclick="toggleAcc(this)">
+      &#128218; Reglas del Guaraní
+      <span class="arrow">&#9660;</span>
+    </div>
+    <div class="acc-body">
+
+      <div class="regla-bloque">
+        <div class="regla-titulo">1ª REGLA — DEL ALFABETO OFICIAL</div>
+        <div class="regla-body">
+          <p>El alfabeto oficial actual del guaraní se compone de <strong>33 letras</strong>:</p>
+          <div class="alfabeto">
+            a &ndash; ã &ndash; ch &ndash; e &ndash; ẽ &ndash; g &ndash; g̃ &ndash; h &ndash; i &ndash; ĩ &ndash; j &ndash; k &ndash; l &ndash; m &ndash; mb &ndash; n &ndash; nd &ndash; ng &ndash; nt &ndash; ñ &ndash; o &ndash; õ &ndash; p &ndash; r &ndash; rr &ndash; s &ndash; t &ndash; u &ndash; ũ &ndash; v &ndash; y &ndash; ỹ &ndash; <strong>' (puso)</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="regla-bloque">
+        <div class="regla-titulo">2ª REGLA — DEL USO DE LA TILDE ACENTUAL (´)</div>
+        <div class="regla-body">
+          <p>La lengua guaraní considera la vocal tónica o la de mayor intensidad. <strong>No se usa la tilde</strong> cuando la vocal tónica está al final de la palabra.</p>
+          <span class="techapyra">Techapyrã: ava, py'aju, karu, pira, jasy, pyhare, yva.</span>
+          <p>Cuando está antes del final, <strong>se usa indefectiblemente</strong>.</p>
+          <span class="techapyra">Techapyrã: áva, óga, purahéi, ára, ýva, ýpe, ogapýpe.</span>
+          <p>Si hay dos o más vocales tónicas, la tilde va sobre la <strong>tónica de la derecha</strong>, siempre que no sea final.</p>
+          <span class="techapyra">Techapyrã: Ogakuéra, mbo'ehára, tupãmba'ejára.</span>
+          <p><strong>Sobre vocales nasales no se usa la tilde acentual.</strong></p>
+          <span class="techapyra">Techapyrã: mokõi, ko'ẽrõ, akãme, tĩme, ñe'ẽre.</span>
+          <p>La palabra lleva <strong>solo una tilde</strong> y es móvil según las partículas añadidas.</p>
+          <span class="techapyra">Techapyrã: pirapire, pirapirére, oñembopirapirevéta.</span>
+        </div>
+      </div>
+
+      <div class="regla-bloque">
+        <div class="regla-titulo">3ª REGLA — DE LA FORMACIÓN DE SÍLABAS NASALES</div>
+        <div class="regla-body">
+          <p>No concurren en la sílaba dos letras nasales: g̃ua, ma, ne, ña.</p>
+          <p>Cuando la vocal oral (a, e, i, o, u, y) forma sílaba con consonantes nasales, queda <strong>nasalizada</strong>.</p>
+          <span class="techapyra">Techapyrã: aháma, ndaipotái, sapy'ánte.</span>
+          <p>Cuando la vocal nasal (ã, ẽ, ĩ, õ, ũ, ỹ) forma sílaba con consonantes orales, queda <strong>nasalizada</strong>.</p>
+          <span class="techapyra">Techapyrã: ñe'ẽ, pytã, okẽ, osẽ.</span>
+        </div>
+      </div>
+
+      <div class="regla-bloque">
+        <div class="regla-titulo">4ª REGLA — DE LA FORMACIÓN DE PALABRAS</div>
+        <div class="regla-body">
+          <p>En guaraní el hablante construye su propia palabra uniendo <strong>partículas al lexema base</strong>. Prefijas y sufijas se unen al lexema formando un segmento de la cadena escrita.</p>
+          <span class="techapyra">Techapyrã: Aguerahaséma &nbsp;|&nbsp; Penekane'õsemaanganingora'e &nbsp;|&nbsp; Peguatáva &nbsp;|&nbsp; Oporomboguapysemo'ãmakuri</span>
+          <p><strong>Posposiciones monosilábicas:</strong> van unidas a su regente.</p>
+          <span class="techapyra">Techapyrã: Oúre (apócope de "ou rehe") &nbsp;|&nbsp; Amógui</span>
+          <p><strong>Posposiciones polisilábicas:</strong> no van unidas a su regente.</p>
+          <span class="techapyra">Techapyrã: Ou rehe &nbsp;|&nbsp; Amo guive</span>
+          <p><strong>Partículas prefijas</strong> — se escriben antes de la palabra:</p>
+          <span class="techapyra">Techapyrã: aguata, rekaru, jaguapy, ñama'ẽ, roipota</span>
+          <p><strong>Partículas sufijas</strong> — se escriben después de la palabra:</p>
+          <span class="techapyra">Techapyrã: aokuéra, yvotyeta, mitãnguéra</span>
+          <p><strong>Posposiciones equivalentes a preposiciones castellanas:</strong><br>
+          <em>pe</em> (palabras orales = "en"/"a") &nbsp;|&nbsp; <em>me</em> (palabras nasales = "en"/"a") &nbsp;|&nbsp; <em>gua / gui</em> ("de"/"del") &nbsp;|&nbsp; <em>re</em> ("por")</p>
+          <span class="techapyra">
+            1. Umi mitãkuña ou jerokyhágui.<br>
+            2. Ajuhu nde sýpe tapére.<br>
+            3. Peipotapiko peẽ ore rojapopaite peẽme pene rembiapo.<br>
+            4. Umi mitãita oúvapiko moõgui osẽmba.
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── CARDS ── -->
+  <div class="cards">
+    <a class="card" href="quiz_ley4251_v2.html">
+      <div class="icon">&#128220;</div>
+      <h2>Quiz: Artículos de la Ley de Lenguas</h2>
+      <p>15 preguntas en orden aleatorio con corrección automática.</p>
+      <span class="tag tag-blue">15 preguntas</span>
+    </a>
+    <a class="card" href="guarani_clasificador_v5.html">
+      <div class="icon">&#127757;</div>
+      <h2>Identificador de Palabras Guaraní</h2>
+      <p>Clasificá palabras en nasales, orales o con digrama. 3 textos disponibles.</p>
+      <span class="tag tag-purple">3 textos</span>
+    </a>
+  </div>
+
+  <p class="footer">
+    Herramientas de estudio desarrollada por SC para uso de alumnos de la<br>
+    <strong style="color:#6a8aaa">Escuela de Ciencias Sociales y Políticas de la UNA</strong><br>
+    con materiales de la Prof. antes mencionada.
+  </p>
+</div>
+
+<script>
+function toggleAcc(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+</script>
+</body>
+</html>

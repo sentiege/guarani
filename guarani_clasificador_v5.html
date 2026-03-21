@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guaraní - Identificador de Palabras</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: Georgia, serif;
+    background: #1a2a4a;
+    min-height: 100vh;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white; border-radius: 16px; padding: 26px;
+    width: 100%; max-width: 700px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3); margin-top: 10px;
+  }
+  /* ── MENU DE TEXTOS ── */
+  #menu-textos { display:block; }
+  #juego { display:none; }
+  .menu-header { text-align:center; margin-bottom:6px; }
+  .menu-header .logo { font-size:48px; }
+  .menu-header h1 { font-size:20px; color:#1a2a4a; margin:8px 0 4px; }
+  .menu-header p { font-size:13px; color:#888; margin-bottom:24px; }
+  .text-cards { display:flex; flex-direction:column; gap:14px; }
+  .text-card {
+    border:2px solid #dce3ed; border-radius:12px; padding:16px 18px;
+    cursor:pointer; transition:all 0.2s; background:#fafafa;
+    text-align:left;
+  }
+  .text-card:hover { border-color:#2980b9; background:#eaf4fb; transform:translateX(4px); }
+  .text-card .tc-label {
+    font-size:11px; font-weight:bold; color:#2980b9;
+    text-transform:uppercase; letter-spacing:1px; margin-bottom:5px;
+  }
+  .text-card h3 { font-size:15px; color:#1a2a4a; margin-bottom:4px; }
+  .text-card .tc-autor { font-size:12px; color:#888; margin-bottom:6px; font-style:italic; }
+  .text-card .tc-preview {
+    font-size:13px; color:#555; line-height:1.5;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .tc-badge {
+    display:inline-block; font-size:11px; padding:2px 9px;
+    border-radius:12px; margin-top:8px; font-weight:bold;
+  }
+  .badge-blue { background:#e3f2fd; color:#1565c0; }
+  .badge-green { background:#e8f5e9; color:#2e7d32; }
+  .badge-purple { background:#f3e5f5; color:#6a1b9a; }
+  /* ── JUEGO ── */
+  .top-bar { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .back-btn {
+    padding:7px 13px; background:#1a2a4a; color:white;
+    border:none; border-radius:8px; font-size:12px; cursor:pointer;
+    font-family:Arial; white-space:nowrap;
+  }
+  .back-btn:hover { background:#2c3e6a; }
+  .juego-title { font-size:15px; color:#1a2a4a; font-weight:bold; }
+  .juego-autor { font-size:12px; color:#888; font-style:italic; }
+  .instruccion {
+    background:#eaf4fb; border-left:4px solid #2980b9;
+    padding:8px 13px; border-radius:6px; font-size:13px;
+    color:#2c3e50; margin-bottom:10px;
+  }
+  .nota-dual {
+    background:#fff8e1; border-left:4px solid #f9a825;
+    padding:7px 13px; border-radius:6px; font-size:12px;
+    color:#5d4037; margin-bottom:12px;
+  }
+  .reglas { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:12px; font-size:11px; }
+  .regla { flex:1; min-width:120px; padding:7px 9px; border-radius:8px; line-height:1.5; }
+  .regla-n { background:#fde8f5; color:#6a1b9a; border:1px solid #ce93d8; }
+  .regla-o { background:#e8f5e9; color:#2e7d32; border:1px solid #a5d6a7; }
+  .regla-d { background:#fff3e0; color:#bf360c; border:1px solid #ffcc80; }
+  .categorias { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .cat-btn {
+    flex:1; padding:10px 8px; border:3px solid transparent;
+    border-radius:10px; font-size:13px; font-weight:bold;
+    cursor:pointer; transition:all 0.2s; text-align:center;
+    min-width:110px; line-height:1.4;
+  }
+  .cat-btn.nasal { background:#fde8f5; color:#8e24aa; border-color:#ce93d8; }
+  .cat-btn.oral  { background:#e8f5e9; color:#2e7d32; border-color:#a5d6a7; }
+  .cat-btn.digr  { background:#fff3e0; color:#e65100; border-color:#ffcc80; }
+  .cat-btn.nasal.active { background:#8e24aa; color:white; border-color:#6a1b9a; transform:scale(1.04); }
+  .cat-btn.oral.active  { background:#2e7d32; color:white; border-color:#1b5e20; transform:scale(1.04); }
+  .cat-btn.digr.active  { background:#e65100; color:white; border-color:#bf360c; transform:scale(1.04); }
+  .text-box {
+    background:#fafafa; border:1px solid #ddd; border-radius:10px;
+    padding:16px 18px; font-size:16px; line-height:2.5;
+    color:#2c3e50; margin-bottom:12px;
+  }
+  .word { cursor:pointer; border-radius:4px; padding:2px 3px; transition:background 0.15s; display:inline; }
+  .word:hover:not(.done) { background:#fff9c4; outline:2px solid #f9a825; }
+  .word.done.solo-n { background:#e1bee7; color:#6a1b9a; font-weight:bold; cursor:default; }
+  .word.done.solo-o { background:#c8e6c9; color:#1b5e20; font-weight:bold; cursor:default; }
+  .word.done.solo-d { background:#ffe0b2; color:#bf360c; font-weight:bold; cursor:default; }
+  .word.done.dual {
+    background:linear-gradient(135deg,#e1bee7 50%,#ffe0b2 50%);
+    color:#4a148c; font-weight:bold; cursor:default; outline:2px solid #ab47bc;
+  }
+  .word.wrong { background:#ffcdd2; color:#b71c1c; animation:shake 0.3s; cursor:default; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)}
+  }
+  .feedback {
+    min-height:40px; padding:9px 13px; border-radius:8px;
+    font-size:13px; font-weight:bold; text-align:center; margin-bottom:10px;
+  }
+  .feedback.ok   { background:#c8e6c9; color:#1b5e20; }
+  .feedback.fail { background:#ffcdd2; color:#b71c1c; }
+  .feedback.hint { background:#fff9c4; color:#f57f17; }
+  .feedback.dual { background:#ede7f6; color:#4a148c; }
+  .score-bar { display:flex; gap:6px; margin-bottom:8px; }
+  .score-item { flex:1; text-align:center; padding:7px 3px; border-radius:8px; font-size:11px; }
+  .score-item span { display:block; font-size:19px; font-weight:bold; }
+  .sc-n { background:#fde8f5; color:#8e24aa; }
+  .sc-o { background:#e8f5e9; color:#2e7d32; }
+  .sc-d { background:#fff3e0; color:#e65100; }
+  .sc-dual { background:#ede7f6; color:#4a148c; }
+  .sc-err { background:#ffebee; color:#b71c1c; }
+  .legend { display:flex; gap:7px; flex-wrap:wrap; font-size:11px; color:#555; margin-top:8px; }
+  .leg { display:flex; align-items:center; gap:3px; }
+  .leg-dot { width:11px; height:11px; border-radius:3px; }
+  .leg-dual { width:11px; height:11px; border-radius:3px; background:linear-gradient(135deg,#e1bee7 50%,#ffe0b2 50%); }
+  .back-index {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:8px 16px; background:#1a2a4a; color:white;
+    border:none; border-radius:8px; font-size:13px;
+    cursor:pointer; margin-bottom:16px; text-decoration:none; font-family:Arial;
+  }
+  .back-index:hover { background:#2c3e6a; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ── MENÚ DE SELECCIÓN DE TEXTO ── -->
+  <div id="menu-textos">
+    <a class="back-index" href="index.html">&#8592; Volver al inicio</a>
+    <div class="menu-header">
+      <div class="logo">&#127757;</div>
+      <h1>Identificador de Palabras Guaraní</h1>
+      <p>Elegí un texto para comenzar el ejercicio</p>
+    </div>
+    <div class="text-cards">
+      <div class="text-card" onclick="iniciarJuego(0)">
+        <div class="tc-label">Texto 1 &mdash; Léxico guaraní</div>
+        <h3>Guarani Ñe'ẽ jeikuaa ha jeipuru</h3>
+        <div class="tc-autor">Nery Fátima Benítez Ramírez &mdash; 86 palabras</div>
+        <div class="tc-preview">Iporã peikuaami, peẽ temimbo'e pendekatupyry ha peneporãporãva...</div>
+        <span class="tc-badge badge-blue">86 palabras</span>
+      </div>
+      <div class="text-card" onclick="iniciarJuego(1)">
+        <div class="tc-label">Texto 2 &mdash; Literatura guaraní</div>
+        <h3>Johecha Paha</h3>
+        <div class="tc-autor">Nery Fátima Benítez Ramírez &mdash; 221 palabras</div>
+        <div class="tc-preview">Ha'ekuéra osẽnte'akue ojupe, mba'eve'yrõ guáicha, Ñandejára oipotágui ojoikuaami...</div>
+        <span class="tc-badge badge-green">221 palabras</span>
+      </div>
+      <div class="text-card" onclick="iniciarJuego(2)">
+        <div class="tc-label">Texto 3 &mdash; Lingüística guaraní</div>
+        <h3>Avañe'ẽ</h3>
+        <div class="tc-autor">David A. Galeano Olivera &mdash; 76 palabras</div>
+        <div class="tc-preview">Avañe'ẽ ombohéra hikuái umi Guaranikuéra pe iñe'ẽ teépe. Avañe'ẽ he'ise Idioma Guarani...</div>
+        <span class="tc-badge badge-purple">76 palabras</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── JUEGO ── -->
+  <div id="juego">
+    <div class="top-bar">
+      <button class="back-btn" onclick="volverMenu()">&#8592; Elegir otro texto</button>
+      <div>
+        <div class="juego-title" id="juego-title"></div>
+        <div class="juego-autor" id="juego-autor"></div>
+      </div>
+    </div>
+
+    <div class="instruccion">
+      &#128073; <strong>1.</strong> Seleccioná una categoría &nbsp;|&nbsp; <strong>2.</strong> Hacé clic en una palabra
+    </div>
+
+    <div class="reglas">
+      <div class="regla regla-n"><strong>ã) NASAL</strong><br>Vocales: ã ẽ ĩ õ ũ ỹ<br>Consonantes: ñ, g̃<br>Digramas: mb nd ng nt</div>
+      <div class="regla regla-o"><strong>ch) ORAL</strong><br>Sin vocales nasales<br>Sin ñ, g̃<br>Sin digramas</div>
+      <div class="regla regla-d"><strong>e) DIGRAMA</strong><br>mb nd ng nt (+ nasal)<br>ch (solo digrama)<br>g̃ (+ nasal)</div>
+    </div>
+
+    <div class="nota-dual">
+      &#9888; Palabras con <strong>mb, nd, ng, nt, g̃, ñ</strong> son <strong>nasales Y con digrama</strong> — ambas respuestas son ✅ correctas.
+    </div>
+
+    <div class="categorias">
+      <button class="cat-btn nasal" onclick="setcat('n')">ã) Tĩguáva<br><small><strong>Nasales</strong></small></button>
+      <button class="cat-btn oral"  onclick="setcat('o')">ch) Juruguáva<br><small><strong>Orales</strong></small></button>
+      <button class="cat-btn digr"  onclick="setcat('d')">e) Pundiekõi<br><small><strong>Digrama</strong></small></button>
+    </div>
+
+    <div class="text-box" id="textbox"></div>
+
+    <div class="feedback hint" id="feedback">Seleccioná una categoría para comenzar...</div>
+
+    <div class="score-bar">
+      <div class="score-item sc-n"><span id="cnt-n">0</span>Nasales</div>
+      <div class="score-item sc-o"><span id="cnt-o">0</span>Orales</div>
+      <div class="score-item sc-d"><span id="cnt-d">0</span>Digramas</div>
+      <div class="score-item sc-dual"><span id="cnt-dual">0</span>Dual ✓</div>
+      <div class="score-item sc-err"><span id="cnt-err">0</span>Errores</div>
+    </div>
+
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#e1bee7"></div> Nasal</div>
+      <div class="leg"><div class="leg-dot" style="background:#c8e6c9"></div> Oral</div>
+      <div class="leg"><div class="leg-dot" style="background:#ffe0b2"></div> Digrama</div>
+      <div class="leg"><div class="leg-dual"></div> Nasal+Digrama</div>
+      <div class="leg"><div class="leg-dot" style="background:#ffcdd2"></div> Incorrecto</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const textos = [
+  {
+    title: "Guarani Ñe'ẽ jeikuaa ha jeipuru",
+    autor: "Nery Fátima Benítez Ramírez",
+    html: `<span class="word" data-cat="n" data-id="0" onclick="clickWord(this)">Iporã</span> <span class="word" data-cat="o" data-id="1" onclick="clickWord(this)">peikuaami</span>, <span class="word" data-cat="n" data-id="2" onclick="clickWord(this)">peẽ</span> <span class="word" data-cat="d n" data-id="3" onclick="clickWord(this)">temimbo'e</span> <span class="word" data-cat="d n" data-id="4" onclick="clickWord(this)">pendekatupyry</span> <span class="word" data-cat="o" data-id="5" onclick="clickWord(this)">ha</span> <span class="word" data-cat="n" data-id="6" onclick="clickWord(this)">peneporãporãva</span>, <span class="word" data-cat="o" data-id="7" onclick="clickWord(this)">peimeha</span> <span class="word" data-cat="n" data-id="8" onclick="clickWord(this)">peteĩ</span> <span class="word" data-cat="d n" data-id="9" onclick="clickWord(this)">mbo'ehaovusu</span> <span class="word" data-cat="n" data-id="10" onclick="clickWord(this)">ijojaha'ỹvape</span>; <span class="word" data-cat="d n" data-id="11" onclick="clickWord(this)">pemañamíntena</span> <span class="word" data-cat="d n" data-id="12" onclick="clickWord(this)">pende</span> <span class="word" data-cat="o" data-id="13" onclick="clickWord(this)">jerére</span>: <span class="word" data-cat="o" data-id="14" onclick="clickWord(this)">opaite</span> <span class="word" data-cat="d n" data-id="15" onclick="clickWord(this)">mba'e</span> <span class="word" data-cat="o" data-id="16" onclick="clickWord(this)">ipyahu</span>, <span class="word" data-cat="o" data-id="17" onclick="clickWord(this)">opaite</span> <span class="word" data-cat="d n" data-id="18" onclick="clickWord(this)">mba'e</span> <span class="word" data-cat="n" data-id="19" onclick="clickWord(this)">iporã</span>. <span class="word" data-cat="n" data-id="20" onclick="clickWord(this)">Peẽ</span> <span class="word" data-cat="n" data-id="21" onclick="clickWord(this)">peñeha'arõ</span> <span class="word" data-cat="o" data-id="22" onclick="clickWord(this)">py'arorýpe</span>, <span class="word" data-cat="o" data-id="23" onclick="clickWord(this)">ore</span> <span class="word" data-cat="o" data-id="24" onclick="clickWord(this)">roipotágui</span> <span class="word" data-cat="o" data-id="25" onclick="clickWord(this)">ko'ápe</span> <span class="word" data-cat="o" data-id="26" onclick="clickWord(this)">pevy'a</span> <span class="word" data-cat="o" data-id="27" onclick="clickWord(this)">ha</span> <span class="word" data-cat="d n" data-id="28" onclick="clickWord(this)">peñemoarandu</span> <span class="word" data-cat="n" data-id="29" onclick="clickWord(this)">sãso</span> <span class="word" data-cat="o" data-id="30" onclick="clickWord(this)">ha</span> <span class="word" data-cat="o" data-id="31" onclick="clickWord(this)">vy'apópe</span>. <span class="word" data-cat="n" data-id="32" onclick="clickWord(this)">Tekotevẽ</span> <span class="word" data-cat="o" data-id="33" onclick="clickWord(this)">peikuaa</span> <span class="word" data-cat="o" data-id="34" onclick="clickWord(this)">avei</span> <span class="word" data-cat="o" data-id="35" onclick="clickWord(this)">ko</span> <span class="word" data-cat="o" data-id="36" onclick="clickWord(this)">Guarani</span> <span class="word" data-cat="n" data-id="37" onclick="clickWord(this)">Ñe'e</span> <span class="word" data-cat="o" data-id="38" onclick="clickWord(this)">jeipuru</span> <span class="word" data-cat="d n" data-id="39" onclick="clickWord(this)">ndaha'evéimaha</span> <span class="word" data-cat="n" data-id="40" onclick="clickWord(this)">ñúme</span>, <span class="word" data-cat="o" data-id="41" onclick="clickWord(this)">ka'aguýpe</span>, <span class="word" data-cat="n" data-id="42" onclick="clickWord(this)">térã</span> <span class="word" data-cat="o" data-id="43" onclick="clickWord(this)">kokuépe</span> <span class="word" data-cat="d n" data-id="44" onclick="clickWord(this)">g̃uara</span> <span class="word" data-cat="d n" data-id="45" onclick="clickWord(this)">añónte</span>; <span class="word" data-cat="d n" data-id="46" onclick="clickWord(this)">ko'ág̃a</span> <span class="word" data-cat="n" data-id="47" onclick="clickWord(this)">ñane</span> <span class="word" data-cat="n" data-id="48" onclick="clickWord(this)">ñe'ẽ</span> <span class="word" data-cat="o" data-id="49" onclick="clickWord(this)">ojeipuru</span> <span class="word" data-cat="o" data-id="50" onclick="clickWord(this)">ha</span> <span class="word" data-cat="o" data-id="51" onclick="clickWord(this)">ojeikuaa</span> <span class="word" data-cat="d n" data-id="52" onclick="clickWord(this)">mombyrymbyry</span>, <span class="word" data-cat="o" data-id="53" onclick="clickWord(this)">avei</span> <span class="word" data-cat="n" data-id="54" onclick="clickWord(this)">tetã</span> <span class="word" data-cat="d n" data-id="55" onclick="clickWord(this)">ambuére</span>, <span class="word" data-cat="o" data-id="56" onclick="clickWord(this)">upévare</span> <span class="word" data-cat="n" data-id="57" onclick="clickWord(this)">tekotevẽ</span> <span class="word" data-cat="n" data-id="58" onclick="clickWord(this)">peñeha'ã</span> <span class="word" data-cat="o" data-id="59" onclick="clickWord(this)">avei</span> <span class="word" data-cat="o" data-id="60" onclick="clickWord(this)">peikuaa</span> <span class="word" data-cat="o" data-id="61" onclick="clickWord(this)">ha</span> <span class="word" data-cat="d n" data-id="62" onclick="clickWord(this)">pemomba'eguasu</span> <span class="word" data-cat="o" data-id="63" onclick="clickWord(this)">opa</span> <span class="word" data-cat="o" data-id="64" onclick="clickWord(this)">ára</span>. <span class="word" data-cat="o" data-id="65" onclick="clickWord(this)">Peikuaápa</span> <span class="word" data-cat="n" data-id="66" onclick="clickWord(this)">moõpa</span> <span class="word" data-cat="o" data-id="67" onclick="clickWord(this)">ikatu</span> <span class="word" data-cat="n" data-id="68" onclick="clickWord(this)">peñe'ẽ</span> <span class="word" data-cat="o" data-id="69" onclick="clickWord(this)">Guaraníme</span>, <span class="word" data-cat="o" data-id="70" onclick="clickWord(this)">ikatu</span> <span class="word" data-cat="n" data-id="71" onclick="clickWord(this)">peñe'ẽ</span> "<span class="word" data-cat="o" data-id="72" onclick="clickWord(this)">oparupiete</span> <span class="word" data-cat="o" data-id="73" onclick="clickWord(this)">ha</span> <span class="word" data-cat="n" data-id="74" onclick="clickWord(this)">petĩ</span> <span class="word" data-cat="n" data-id="75" onclick="clickWord(this)">ỹre</span>", <span class="word" data-cat="d n" data-id="76" onclick="clickWord(this)">kóvaningo</span> <span class="word" data-cat="n" data-id="77" onclick="clickWord(this)">Ñane</span> <span class="word" data-cat="n" data-id="78" onclick="clickWord(this)">Ñe'ẽ</span> <span class="word" data-cat="o" data-id="79" onclick="clickWord(this)">Teete</span>; <span class="word" data-cat="o" data-id="80" onclick="clickWord(this)">hese</span> <span class="word" data-cat="o" data-id="81" onclick="clickWord(this)">ae</span> <span class="word" data-cat="d n" data-id="82" onclick="clickWord(this)">ñande</span> <span class="word" data-cat="d n" data-id="83" onclick="clickWord(this)">ñaneambue</span> <span class="word" data-cat="d n" data-id="84" onclick="clickWord(this)">ñande</span> <span class="word" data-cat="d" data-id="85" onclick="clickWord(this)">rapichakuéragui</span>.`
+  },
+  {
+    title: "Johecha Paha",
+    autor: "Nery Fátima Benítez Ramírez",
+    html: `<span class="word" data-cat="o" data-id="86" onclick="clickWord(this)">Ha'ekuéra</span> <span class="word" data-cat="d n" data-id="87" onclick="clickWord(this)">osẽnte'akue</span> <span class="word" data-cat="o" data-id="88" onclick="clickWord(this)">ojupe</span>, <span class="word" data-cat="d n" data-id="89" onclick="clickWord(this)">mba'eve'yrõ</span> <span class="word" data-cat="d" data-id="90" onclick="clickWord(this)">guáicha</span>, <span class="word" data-cat="d n" data-id="91" onclick="clickWord(this)">Ñandejára</span> <span class="word" data-cat="o" data-id="92" onclick="clickWord(this)">oipotágui</span> <span class="word" data-cat="o" data-id="93" onclick="clickWord(this)">ojoikuaami</span>. <span class="word" data-cat="d n" data-id="94" onclick="clickWord(this)">Sapy'ánte</span> <span class="word" data-cat="d" data-id="95" onclick="clickWord(this)">péicha</span> <span class="word" data-cat="n" data-id="96" onclick="clickWord(this)">oĩ</span> <span class="word" data-cat="n" data-id="97" onclick="clickWord(this)">ikatu'ỹva</span> <span class="word" data-cat="d n" data-id="98" onclick="clickWord(this)">oñemo'ambue</span>, <span class="word" data-cat="n" data-id="99" onclick="clickWord(this)">ajeverõ</span>, <span class="word" data-cat="n" data-id="100" onclick="clickWord(this)">peteĩ</span> <span class="word" data-cat="d n" data-id="101" onclick="clickWord(this)">ko'ẽmbota</span> <span class="word" data-cat="o" data-id="102" onclick="clickWord(this)">ro'yeterei</span> <span class="word" data-cat="o" data-id="103" onclick="clickWord(this)">jave</span>, <span class="word" data-cat="o" data-id="104" onclick="clickWord(this)">upe</span> <span class="word" data-cat="d n" data-id="105" onclick="clickWord(this)">mba'yrumỹi</span> <span class="word" data-cat="n" data-id="106" onclick="clickWord(this)">ha'arõháme</span> <span class="word" data-cat="o" data-id="107" onclick="clickWord(this)">ojojuhu</span> <span class="word" data-cat="n" data-id="108" onclick="clickWord(this)">ko'ã</span> <span class="word" data-cat="n" data-id="109" onclick="clickWord(this)">mokõi</span> <span class="word" data-cat="d" data-id="110" onclick="clickWord(this)">tapicha</span>: <span class="word" data-cat="o" data-id="111" onclick="clickWord(this)">Pe</span> <span class="word" data-cat="n" data-id="112" onclick="clickWord(this)">kuñataĩ</span> <span class="word" data-cat="n" data-id="113" onclick="clickWord(this)">morotĩ</span>, <span class="word" data-cat="o" data-id="114" onclick="clickWord(this)">yvate</span>, <span class="word" data-cat="n" data-id="115" onclick="clickWord(this)">ñane</span> <span class="word" data-cat="n" data-id="116" onclick="clickWord(this)">retãygua</span> <span class="word" data-cat="o" data-id="117" onclick="clickWord(this)">ha</span> <span class="word" data-cat="o" data-id="118" onclick="clickWord(this)">pe</span> <span class="word" data-cat="o" data-id="119" onclick="clickWord(this)">karia'y</span> <span class="word" data-cat="o" data-id="120" onclick="clickWord(this)">yvate</span>, <span class="word" data-cat="o" data-id="121" onclick="clickWord(this)">piresa'i</span>, <span class="word" data-cat="o" data-id="122" onclick="clickWord(this)">jukyete</span>, <span class="word" data-cat="o" data-id="123" onclick="clickWord(this)">hakatu</span> <span class="word" data-cat="o" data-id="124" onclick="clickWord(this)">ha'e</span> <span class="word" data-cat="n" data-id="125" onclick="clickWord(this)">tetã</span> <span class="word" data-cat="d n" data-id="126" onclick="clickWord(this)">ambuegua</span>. <span class="word" data-cat="n" data-id="127" onclick="clickWord(this)">Mokõivéva</span> <span class="word" data-cat="o" data-id="128" onclick="clickWord(this)">ojojuhu</span> <span class="word" data-cat="d n" data-id="129" onclick="clickWord(this)">mombyry</span> <span class="word" data-cat="o" data-id="130" onclick="clickWord(this)">hogaguikuéra</span>, <span class="word" data-cat="o" data-id="131" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="d" data-id="132" onclick="clickWord(this)">ojohecha</span> <span class="word" data-cat="o" data-id="133" onclick="clickWord(this)">ypy</span> <span class="word" data-cat="o" data-id="134" onclick="clickWord(this)">guive</span> <span class="word" data-cat="n" data-id="135" onclick="clickWord(this)">oñepyrũma</span> <span class="word" data-cat="d" data-id="136" onclick="clickWord(this)">ohechakuaa</span> <span class="word" data-cat="n" data-id="137" onclick="clickWord(this)">heñoiha</span> <span class="word" data-cat="n" data-id="138" onclick="clickWord(this)">iñe'ãmekuéra</span> <span class="word" data-cat="d n" data-id="139" onclick="clickWord(this)">mborayhu</span> <span class="word" data-cat="n" data-id="140" onclick="clickWord(this)">potĩ</span>, <span class="word" data-cat="o" data-id="141" onclick="clickWord(this)">umi</span> <span class="word" data-cat="d n" data-id="142" onclick="clickWord(this)">nembopy'a</span> <span class="word" data-cat="n" data-id="143" onclick="clickWord(this)">kyrỹiva</span> <span class="word" data-cat="o" data-id="144" onclick="clickWord(this)">rehegua</span>.<br><span class="word" data-cat="n" data-id="145" onclick="clickWord(this)">Mokõivéva</span> <span class="word" data-cat="n" data-id="146" onclick="clickWord(this)">oñepyrũma</span> <span class="word" data-cat="d" data-id="147" onclick="clickWord(this)">ojohechaga'u'imimi</span>, <span class="word" data-cat="n" data-id="148" onclick="clickWord(this)">oñepyrũma</span> <span class="word" data-cat="o" data-id="149" onclick="clickWord(this)">ojoayhu</span>, <span class="word" data-cat="d n" data-id="150" onclick="clickWord(this)">ag̃akatu</span> <span class="word" data-cat="d n" data-id="151" onclick="clickWord(this)">peichavérõ</span> <span class="word" data-cat="o" data-id="152" onclick="clickWord(this)">jepe</span>, <span class="word" data-cat="d n" data-id="153" onclick="clickWord(this)">ndaikatúi</span> <span class="word" data-cat="n" data-id="154" onclick="clickWord(this)">omo'añete</span> <span class="word" data-cat="d n" data-id="155" onclick="clickWord(this)">imborayhu</span>, <span class="word" data-cat="o" data-id="156" onclick="clickWord(this)">ára</span> <span class="word" data-cat="o" data-id="157" onclick="clickWord(this)">ha</span> <span class="word" data-cat="o" data-id="158" onclick="clickWord(this)">ára</span> <span class="word" data-cat="o" data-id="159" onclick="clickWord(this)">okakuaavéva</span> <span class="word" data-cat="o" data-id="160" onclick="clickWord(this)">ohóvo</span>; <span class="word" data-cat="o" data-id="161" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="d" data-id="162" onclick="clickWord(this)">ohechakuaa</span> <span class="word" data-cat="o" data-id="163" onclick="clickWord(this)">hetaite</span> <span class="word" data-cat="d n" data-id="164" onclick="clickWord(this)">mba'e</span> <span class="word" data-cat="n" data-id="165" onclick="clickWord(this)">porã</span> <span class="word" data-cat="n" data-id="166" onclick="clickWord(this)">ikatu'arãmo'ãhakuri</span> <span class="word" data-cat="o" data-id="167" onclick="clickWord(this)">ojapo</span> <span class="word" data-cat="d n" data-id="168" onclick="clickWord(this)">oñondive</span>, <span class="word" data-cat="o" data-id="169" onclick="clickWord(this)">ymamieve</span> <span class="word" data-cat="o" data-id="170" onclick="clickWord(this)">ojoikuaa</span> <span class="word" data-cat="o" data-id="171" onclick="clickWord(this)">riréramo</span>; <span class="word" data-cat="n" data-id="172" onclick="clickWord(this)">ko'ã</span> <span class="word" data-cat="d n" data-id="173" onclick="clickWord(this)">mba'e</span> <span class="word" data-cat="d n" data-id="174" onclick="clickWord(this)">ombovy'a</span> <span class="word" data-cat="o" data-id="175" onclick="clickWord(this)">hekovekuéra</span> <span class="word" data-cat="o" data-id="176" onclick="clickWord(this)">ha</span> <span class="word" data-cat="n" data-id="177" onclick="clickWord(this)">oñepyrũ</span> <span class="word" data-cat="o" data-id="178" onclick="clickWord(this)">oguata</span> <span class="word" data-cat="o" data-id="179" onclick="clickWord(this)">ojoykére</span>, <span class="word" data-cat="n" data-id="180" onclick="clickWord(this)">oguereko'ỹre</span> <span class="word" data-cat="n" data-id="181" onclick="clickWord(this)">iñakãmekuéra</span> <span class="word" data-cat="o" data-id="182" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="o" data-id="183" onclick="clickWord(this)">nadaha'eiha</span> <span class="word" data-cat="o" data-id="184" onclick="clickWord(this)">ojupe</span> <span class="word" data-cat="d n" data-id="185" onclick="clickWord(this)">g̃uara</span>. <span class="word" data-cat="o" data-id="186" onclick="clickWord(this)">Pya'ete</span> <span class="word" data-cat="o" data-id="187" onclick="clickWord(this)">voi</span> <span class="word" data-cat="o" data-id="188" onclick="clickWord(this)">ojepokuaa</span> <span class="word" data-cat="o" data-id="189" onclick="clickWord(this)">ojuehe</span> <span class="word" data-cat="o" data-id="190" onclick="clickWord(this)">ha</span> <span class="word" data-cat="o" data-id="191" onclick="clickWord(this)">arareíre</span> <span class="word" data-cat="d" data-id="192" onclick="clickWord(this)">ohechakuaa</span> <span class="word" data-cat="o" data-id="193" onclick="clickWord(this)">hikuái</span> <span class="word" data-cat="o" data-id="194" onclick="clickWord(this)">hasyetereitaha</span> <span class="word" data-cat="d" data-id="195" onclick="clickWord(this)">chupekuéra</span> <span class="word" data-cat="o" data-id="196" onclick="clickWord(this)">pe</span> <span class="word" data-cat="d" data-id="197" onclick="clickWord(this)">jehecha</span> <span class="word" data-cat="o" data-id="198" onclick="clickWord(this)">paha</span>.<br><span class="word" data-cat="n" data-id="199" onclick="clickWord(this)">Oimo'ã'ỹre</span>, <span class="word" data-cat="d n" data-id="200" onclick="clickWord(this)">og̃uahẽmakatu</span> <span class="word" data-cat="o" data-id="201" onclick="clickWord(this)">pe</span> <span class="word" data-cat="o" data-id="202" onclick="clickWord(this)">ára</span> <span class="word" data-cat="o" data-id="203" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="d n" data-id="204" onclick="clickWord(this)">ndoipotaietéva</span>… <span class="word" data-cat="o" data-id="205" onclick="clickWord(this)">Pyharevete</span> <span class="word" data-cat="o" data-id="206" onclick="clickWord(this)">guive</span> <span class="word" data-cat="n" data-id="207" onclick="clickWord(this)">oñomoirũ</span>, <span class="word" data-cat="o" data-id="208" onclick="clickWord(this)">ohai</span> <span class="word" data-cat="o" data-id="209" onclick="clickWord(this)">ojupe</span> <span class="word" data-cat="o" data-id="210" onclick="clickWord(this)">umi</span> <span class="word" data-cat="d n" data-id="211" onclick="clickWord(this)">mba'e</span> <span class="word" data-cat="n" data-id="212" onclick="clickWord(this)">iporãporãvéva</span> <span class="word" data-cat="n" data-id="213" onclick="clickWord(this)">ikatuva'erã</span> <span class="word" data-cat="n" data-id="214" onclick="clickWord(this)">ome'ẽ</span> <span class="word" data-cat="o" data-id="215" onclick="clickWord(this)">ojupe</span> <span class="word" data-cat="d n" data-id="216" onclick="clickWord(this)">imandu'aháramo</span> <span class="word" data-cat="o" data-id="217" onclick="clickWord(this)">ojuehe</span> <span class="word" data-cat="o" data-id="218" onclick="clickWord(this)">ojei</span> <span class="word" data-cat="o" data-id="219" onclick="clickWord(this)">vove</span> <span class="word" data-cat="o" data-id="220" onclick="clickWord(this)">ojuehegui</span>. <span class="word" data-cat="o" data-id="221" onclick="clickWord(this)">Upe</span> <span class="word" data-cat="o" data-id="222" onclick="clickWord(this)">árape</span> <span class="word" data-cat="o" data-id="223" onclick="clickWord(this)">oguapy</span> <span class="word" data-cat="o" data-id="224" onclick="clickWord(this)">okaru</span> <span class="word" data-cat="d n" data-id="225" onclick="clickWord(this)">hag̃ua</span> <span class="word" data-cat="d n" data-id="226" onclick="clickWord(this)">oñondive</span>, <span class="word" data-cat="d n" data-id="227" onclick="clickWord(this)">ndaikatúi</span> <span class="word" data-cat="o" data-id="228" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="n" data-id="229" onclick="clickWord(this)">omokõ</span> <span class="word" data-cat="o" data-id="230" onclick="clickWord(this)">pe</span> <span class="word" data-cat="d n" data-id="231" onclick="clickWord(this)">hembi'u</span>, <span class="word" data-cat="o" data-id="232" onclick="clickWord(this)">are</span> <span class="word" data-cat="n" data-id="233" onclick="clickWord(this)">oma'ẽ</span> <span class="word" data-cat="o" data-id="234" onclick="clickWord(this)">ojuehe</span> <span class="word" data-cat="n" data-id="235" onclick="clickWord(this)">kirirĩháme</span> <span class="word" data-cat="o" data-id="236" onclick="clickWord(this)">ha</span> <span class="word" data-cat="n" data-id="237" onclick="clickWord(this)">oma'ẽ</span> <span class="word" data-cat="o" data-id="238" onclick="clickWord(this)">aja</span> <span class="word" data-cat="o" data-id="239" onclick="clickWord(this)">pukukue</span> <span class="word" data-cat="o" data-id="240" onclick="clickWord(this)">ojuehe</span>, <span class="word" data-cat="n" data-id="241" onclick="clickWord(this)">mokõivéva</span> <span class="word" data-cat="n" data-id="242" onclick="clickWord(this)">akã</span> <span class="word" data-cat="o" data-id="243" onclick="clickWord(this)">rupi</span> <span class="word" data-cat="o" data-id="244" onclick="clickWord(this)">heta</span> <span class="word" data-cat="d n" data-id="245" onclick="clickWord(this)">mba'e</span> <span class="word" data-cat="o" data-id="246" onclick="clickWord(this)">ohasa</span>, <span class="word" data-cat="d n" data-id="247" onclick="clickWord(this)">oñandu</span> <span class="word" data-cat="o" data-id="248" onclick="clickWord(this)">pe</span> <span class="word" data-cat="o" data-id="249" onclick="clickWord(this)">aravopapaha</span> <span class="word" data-cat="n" data-id="250" onclick="clickWord(this)">iñakuãvemaha</span>, <span class="word" data-cat="o" data-id="251" onclick="clickWord(this)">ha</span> <span class="word" data-cat="o" data-id="252" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="d n" data-id="253" onclick="clickWord(this)">ndaikatuvéimaha</span> <span class="word" data-cat="d n" data-id="254" onclick="clickWord(this)">mba'eve</span> <span class="word" data-cat="o" data-id="255" onclick="clickWord(this)">ojapo</span> <span class="word" data-cat="o" data-id="256" onclick="clickWord(this)">opyta</span> <span class="word" data-cat="d n" data-id="257" onclick="clickWord(this)">hag̃ua</span> <span class="word" data-cat="d n" data-id="258" onclick="clickWord(this)">oñondive</span>, <span class="word" data-cat="n" data-id="259" onclick="clickWord(this)">mokõivéva</span> <span class="word" data-cat="n" data-id="260" onclick="clickWord(this)">hi'ãho</span> <span class="word" data-cat="o" data-id="261" onclick="clickWord(this)">ojojaite</span>, <span class="word" data-cat="o" data-id="262" onclick="clickWord(this)">ojapyhy</span> <span class="word" data-cat="o" data-id="263" onclick="clickWord(this)">ojopo</span> <span class="word" data-cat="o" data-id="264" onclick="clickWord(this)">ha</span> <span class="word" data-cat="d n" data-id="265" onclick="clickWord(this)">oñandu</span> <span class="word" data-cat="o" data-id="266" onclick="clickWord(this)">tesay</span> <span class="word" data-cat="d n" data-id="267" onclick="clickWord(this)">he'ẽmbochýva</span> <span class="word" data-cat="o" data-id="268" onclick="clickWord(this)">hovarekuéra</span> <span class="word" data-cat="o" data-id="269" onclick="clickWord(this)">osyry</span>. <span class="word" data-cat="n" data-id="270" onclick="clickWord(this)">Vy'a'ỹ</span> <span class="word" data-cat="n" data-id="271" onclick="clickWord(this)">ijapyra'ỹva</span> <span class="word" data-cat="o" data-id="272" onclick="clickWord(this)">ojetypeka</span> <span class="word" data-cat="n" data-id="273" onclick="clickWord(this)">iñe'ãmekuéra</span>, <span class="word" data-cat="o" data-id="274" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="d n" data-id="275" onclick="clickWord(this)">ndaikatúi</span> <span class="word" data-cat="n" data-id="276" onclick="clickWord(this)">omo'añete</span> <span class="word" data-cat="d n" data-id="277" onclick="clickWord(this)">imborayhu</span> <span class="word" data-cat="o" data-id="278" onclick="clickWord(this)">ha</span> <span class="word" data-cat="d n" data-id="279" onclick="clickWord(this)">ndaikatúi</span> <span class="word" data-cat="o" data-id="280" onclick="clickWord(this)">opytávo</span> <span class="word" data-cat="d n" data-id="281" onclick="clickWord(this)">oñondive</span>. <span class="word" data-cat="d n" data-id="282" onclick="clickWord(this)">Oĩmbaitéma</span>, <span class="word" data-cat="d n" data-id="283" onclick="clickWord(this)">ndaikatuvéima</span> <span class="word" data-cat="o" data-id="284" onclick="clickWord(this)">oguevívo</span>, <span class="word" data-cat="d n" data-id="285" onclick="clickWord(this)">ohomantemava'erã</span>, <span class="word" data-cat="o" data-id="286" onclick="clickWord(this)">upe</span> <span class="word" data-cat="o" data-id="287" onclick="clickWord(this)">ka'aru</span> <span class="word" data-cat="n" data-id="288" onclick="clickWord(this)">pytũme</span> <span class="word" data-cat="o" data-id="289" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="o" data-id="290" onclick="clickWord(this)">pya'ete</span> <span class="word" data-cat="o" data-id="291" onclick="clickWord(this)">ojeíta</span> <span class="word" data-cat="o" data-id="292" onclick="clickWord(this)">ojuehegui</span>, <span class="word" data-cat="d n" data-id="293" onclick="clickWord(this)">ag̃akatu</span> <span class="word" data-cat="d n" data-id="294" onclick="clickWord(this)">peichaverõ</span> <span class="word" data-cat="o" data-id="295" onclick="clickWord(this)">jepe</span> <span class="word" data-cat="d n" data-id="296" onclick="clickWord(this)">akóinte</span> <span class="word" data-cat="o" data-id="297" onclick="clickWord(this)">ojoayhúta</span> <span class="word" data-cat="d n" data-id="298" onclick="clickWord(this)">mombyry</span> <span class="word" data-cat="o" data-id="299" onclick="clickWord(this)">guive</span>.<br><span class="word" data-cat="o" data-id="300" onclick="clickWord(this)">Upe</span> <span class="word" data-cat="o" data-id="301" onclick="clickWord(this)">pyharépe</span> <span class="word" data-cat="o" data-id="302" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="o" data-id="303" onclick="clickWord(this)">oikuaa</span> <span class="word" data-cat="o" data-id="304" onclick="clickWord(this)">hasyetévaha</span> <span class="word" data-cat="d" data-id="305" onclick="clickWord(this)">johecha</span> <span class="word" data-cat="o" data-id="306" onclick="clickWord(this)">paha</span>.`
+  },
+  {
+    title: "Avañe'ẽ",
+    autor: "David A. Galeano Olivera",
+    html: `<span class="word" data-cat="n" data-id="307" onclick="clickWord(this)">Avañe'ẽ</span> <span class="word" data-cat="d n" data-id="308" onclick="clickWord(this)">ombohéra</span> <span class="word" data-cat="o" data-id="309" onclick="clickWord(this)">hikuái</span> <span class="word" data-cat="o" data-id="310" onclick="clickWord(this)">umi</span> <span class="word" data-cat="o" data-id="311" onclick="clickWord(this)">Guaranikuéra</span> <span class="word" data-cat="o" data-id="312" onclick="clickWord(this)">pe</span> <span class="word" data-cat="n" data-id="313" onclick="clickWord(this)">iñe'ẽ</span> <span class="word" data-cat="o" data-id="314" onclick="clickWord(this)">teépe</span>. <span class="word" data-cat="n" data-id="315" onclick="clickWord(this)">Avañe'ẽ</span> <span class="word" data-cat="o" data-id="316" onclick="clickWord(this)">he'ise</span> <span class="word" data-cat="o" data-id="317" onclick="clickWord(this)">Idioma</span> <span class="word" data-cat="o" data-id="318" onclick="clickWord(this)">Guarani</span>. <span class="word" data-cat="o" data-id="319" onclick="clickWord(this)">Péva</span> <span class="word" data-cat="o" data-id="320" onclick="clickWord(this)">ha'ehína</span> <span class="word" data-cat="o" data-id="321" onclick="clickWord(this)">pe</span> <span class="word" data-cat="n" data-id="322" onclick="clickWord(this)">ñe'ẽ</span> <span class="word" data-cat="o" data-id="323" onclick="clickWord(this)">ha'ekuéra</span> <span class="word" data-cat="o" data-id="324" onclick="clickWord(this)">oipurúva</span> <span class="word" data-cat="d n" data-id="325" onclick="clickWord(this)">oñomongeta</span> <span class="word" data-cat="o" data-id="326" onclick="clickWord(this)">hagua</span>, <span class="word" data-cat="d n" data-id="327" onclick="clickWord(this)">ombohasávo</span> <span class="word" data-cat="o" data-id="328" onclick="clickWord(this)">ojupe</span> <span class="word" data-cat="d n" data-id="329" onclick="clickWord(this)">hemiandu</span>, <span class="word" data-cat="d n" data-id="330" onclick="clickWord(this)">hembikuaa</span>, <span class="word" data-cat="d n" data-id="331" onclick="clickWord(this)">hembiasa</span> <span class="word" data-cat="o" data-id="332" onclick="clickWord(this)">ha</span> <span class="word" data-cat="d n" data-id="333" onclick="clickWord(this)">hembipota</span>. "<span class="word" data-cat="o" data-id="334" onclick="clickWord(this)">Ava</span>" <span class="word" data-cat="o" data-id="335" onclick="clickWord(this)">niko</span> <span class="word" data-cat="o" data-id="336" onclick="clickWord(this)">he'ise</span> "<span class="word" data-cat="o" data-id="337" onclick="clickWord(this)">persona</span>" (<span class="word" data-cat="o" data-id="338" onclick="clickWord(this)">tekove</span>, <span class="word" data-cat="o" data-id="339" onclick="clickWord(this)">yvypóra</span>, <span class="word" data-cat="d" data-id="340" onclick="clickWord(this)">tapicha</span>, <span class="word" data-cat="d n" data-id="341" onclick="clickWord(this)">kuimba'e</span> <span class="word" data-cat="n" data-id="342" onclick="clickWord(this)">térã</span> <span class="word" data-cat="n" data-id="343" onclick="clickWord(this)">kuña</span>) <span class="word" data-cat="o" data-id="344" onclick="clickWord(this)">oikóva</span> <span class="word" data-cat="d n" data-id="345" onclick="clickWord(this)">oñondive</span>, <span class="word" data-cat="n" data-id="346" onclick="clickWord(this)">peteĩ</span> <span class="word" data-cat="n" data-id="347" onclick="clickWord(this)">avano'õme</span> (<span class="word" data-cat="o" data-id="348" onclick="clickWord(this)">sociedad</span>). "<span class="word" data-cat="n" data-id="349" onclick="clickWord(this)">Ñe'ẽ</span>" <span class="word" data-cat="o" data-id="350" onclick="clickWord(this)">katu</span> <span class="word" data-cat="o" data-id="351" onclick="clickWord(this)">he'ise</span> "<span class="word" data-cat="d n" data-id="352" onclick="clickWord(this)">lengua</span>, <span class="word" data-cat="o" data-id="353" onclick="clickWord(this)">idioma</span>". <span class="word" data-cat="o" data-id="354" onclick="clickWord(this)">Péva</span> <span class="word" data-cat="o" data-id="355" onclick="clickWord(this)">ha'ehína</span> <span class="word" data-cat="o" data-id="356" onclick="clickWord(this)">pe</span> <span class="word" data-cat="d n" data-id="357" onclick="clickWord(this)">tembipuru</span> <span class="word" data-cat="o" data-id="358" onclick="clickWord(this)">guasu</span> <span class="word" data-cat="o" data-id="359" onclick="clickWord(this)">Guaranikuéra</span> <span class="word" data-cat="o" data-id="360" onclick="clickWord(this)">oipurúva</span> <span class="word" data-cat="o" data-id="361" onclick="clickWord(this)">ojokupyty</span> <span class="word" data-cat="o" data-id="362" onclick="clickWord(this)">hagua</span>, <span class="word" data-cat="o" data-id="363" onclick="clickWord(this)">ojoapytépe</span>. <span class="word" data-cat="n" data-id="364" onclick="clickWord(this)">Ñe'ẽ</span> <span class="word" data-cat="o" data-id="365" onclick="clickWord(this)">niko</span> <span class="word" data-cat="n" data-id="366" onclick="clickWord(this)">omopeteĩ</span> <span class="word" data-cat="d" data-id="367" onclick="clickWord(this)">chupekuéra</span> <span class="word" data-cat="o" data-id="368" onclick="clickWord(this)">ha</span> <span class="word" data-cat="d" data-id="369" onclick="clickWord(this)">ohechauka</span> <span class="word" data-cat="o" data-id="370" onclick="clickWord(this)">avei</span> <span class="word" data-cat="o" data-id="371" onclick="clickWord(this)">avakuéra</span> <span class="word" data-cat="o" data-id="372" onclick="clickWord(this)">oikoha</span> <span class="word" data-cat="n" data-id="373" onclick="clickWord(this)">peteĩ</span> <span class="word" data-cat="n" data-id="374" onclick="clickWord(this)">tetãme</span> <span class="word" data-cat="o" data-id="375" onclick="clickWord(this)">ha</span> <span class="word" data-cat="o" data-id="376" onclick="clickWord(this)">upe</span> <span class="word" data-cat="n" data-id="377" onclick="clickWord(this)">tetãme</span> <span class="word" data-cat="o" data-id="378" onclick="clickWord(this)">ojepuruha</span> <span class="word" data-cat="n" data-id="379" onclick="clickWord(this)">peteĩ</span> <span class="word" data-cat="n" data-id="380" onclick="clickWord(this)">ñe'ẽte</span>, <span class="word" data-cat="o" data-id="381" onclick="clickWord(this)">ha'éva</span> <span class="word" data-cat="n" data-id="382" onclick="clickWord(this)">avañe'ẽ</span>.`
+  }
+];
+
+let currentCat = null;
+let doneWords = new Set();
+let counts = { n:0, o:0, d:0, dual:0, err:0 };
+const catNames = { n:'Nasal (tĩguáva)', o:'Oral (juruguáva)', d:'Con digrama (pundiekõi)' };
+
+function iniciarJuego(idx) {
+  const t = textos[idx];
+  document.getElementById('juego-title').textContent = t.title;
+  document.getElementById('juego-autor').textContent = t.autor;
+  document.getElementById('textbox').innerHTML = t.html;
+  resetScore();
+  document.getElementById('menu-textos').style.display = 'none';
+  document.getElementById('juego').style.display = 'block';
+  document.getElementById('feedback').className = 'feedback hint';
+  document.getElementById('feedback').textContent = 'Seleccioná una categoría para comenzar...';
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  currentCat = null;
+}
+
+function volverMenu() {
+  document.getElementById('juego').style.display = 'none';
+  document.getElementById('menu-textos').style.display = 'block';
+  resetScore();
+}
+
+function resetScore() {
+  doneWords = new Set();
+  counts = { n:0, o:0, d:0, dual:0, err:0 };
+  ['n','o','d','dual','err'].forEach(k => document.getElementById('cnt-'+k).textContent = '0');
+}
+
+function setcat(cat) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  const map = { n:0, o:1, d:2 };
+  document.querySelectorAll('.cat-btn')[map[cat]].classList.add('active');
+  const labels = { n:'ã) Nasales', o:'ch) Orales', d:'e) Con Digrama' };
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback hint';
+  fb.textContent = '📌 Activa: ' + labels[cat] + ' — hacé clic en una palabra';
+}
+
+function clickWord(el) {
+  const id = el.getAttribute('data-id');
+  if (doneWords.has(id)) {
+    document.getElementById('feedback').className = 'feedback hint';
+    document.getElementById('feedback').textContent = '⚠️ Esta palabra ya fue clasificada.';
+    return;
+  }
+  if (!currentCat) {
+    document.getElementById('feedback').className = 'feedback hint';
+    document.getElementById('feedback').textContent = '⚠️ Primero seleccioná una categoría.';
+    return;
+  }
+  const cats = el.getAttribute('data-cat').split(' ');
+  const word = el.textContent;
+  const fb = document.getElementById('feedback');
+  const isDual = cats.includes('n') && cats.includes('d');
+  if (cats.includes(currentCat)) {
+    doneWords.add(id);
+    el.classList.add('done');
+    if (isDual) {
+      el.classList.add('dual');
+      counts.dual++;
+      document.getElementById('cnt-dual').textContent = counts.dual;
+      fb.className = 'feedback dual';
+      fb.textContent = '✅ ¡Correcto! "' + word + '" es ' + catNames[currentCat] + ' — ¡y también pertenece a la otra categoría!';
+    } else {
+      el.classList.add('solo-' + cats[0]);
+      counts[cats[0]]++;
+      document.getElementById('cnt-' + cats[0]).textContent = counts[cats[0]];
+      fb.className = 'feedback ok';
+      fb.textContent = '✅ ¡Correcto! "' + word + '" es ' + catNames[cats[0]] + '.';
+    }
+  } else {
+    counts.err++;
+    document.getElementById('cnt-err').textContent = counts.err;
+    const correctLabel = isDual ? catNames['n'] + ' y ' + catNames['d'] : catNames[cats[0]];
+    fb.className = 'feedback fail';
+    fb.textContent = '❌ Incorrecto. "' + word + '" es: ' + correctLabel + '.';
+    el.classList.add('wrong');
+    setTimeout(() => { el.classList.remove('wrong'); }, 1100);
+  }
+}
+</script>
+</body>
+</html>

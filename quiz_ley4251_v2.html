@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Ley 4251/11</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    background: #1a2a4a;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .container {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    width: 100%;
+    max-width: 580px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    color: #1a2a4a;
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+  .progress-bar-bg {
+    background: #e0e0e0;
+    border-radius: 10px;
+    height: 8px;
+    margin: 10px 0;
+  }
+  .progress-bar {
+    background: #2980b9;
+    height: 8px;
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+  .counter {
+    font-size: 13px;
+    color: #888;
+    text-align: right;
+  }
+  .art-label {
+    display: inline-block;
+    background: #2980b9;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 12px;
+  }
+  .question {
+    font-size: 17px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 22px;
+    line-height: 1.4;
+  }
+  .option {
+    display: block;
+    width: 100%;
+    padding: 13px 16px;
+    margin: 9px 0;
+    background: #f7f9fc;
+    border: 2px solid #dce3ed;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s;
+    color: #2c3e50;
+  }
+  .option:hover:not(:disabled) {
+    background: #eaf4fb;
+    border-color: #2980b9;
+  }
+  .option.selected {
+    background: #d6eaf8;
+    border-color: #2980b9;
+    font-weight: bold;
+  }
+  .option.correct {
+    background: #d5f5e3;
+    border-color: #27ae60;
+    color: #1a7a40;
+    font-weight: bold;
+  }
+  .option.wrong {
+    background: #fadbd8;
+    border-color: #e74c3c;
+    color: #a93226;
+  }
+  .feedback {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin: 14px 0;
+    display: none;
+    line-height: 1.5;
+  }
+  .feedback.show { display: block; }
+  .feedback.ok { background: #d5f5e3; color: #1a7a40; border-left: 4px solid #27ae60; }
+  .feedback.fail { background: #fadbd8; color: #a93226; border-left: 4px solid #e74c3c; }
+  .btn-next {
+    display: none;
+    width: 100%;
+    padding: 14px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .btn-next:hover { background: #219150; }
+  .btn-next.show { display: block; }
+  .resultado {
+    text-align: center;
+    padding: 10px 0;
+  }
+  .resultado .emoji { font-size: 60px; margin-bottom: 10px; }
+  .resultado h2 { color: #1a2a4a; font-size: 22px; margin-bottom: 8px; }
+  .resultado .score { font-size: 42px; font-weight: bold; color: #2980b9; margin: 10px 0; }
+  .resultado p { color: #666; font-size: 15px; margin-bottom: 20px; }
+  .btn-reset {
+    padding: 13px 30px;
+    background: #2980b9;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .btn-reset:hover { background: #2471a3; }
+
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; background: #1a2a4a; color: white;
+    border: none; border-radius: 8px; font-size: 13px;
+    cursor: pointer; margin-bottom: 16px; text-decoration: none;
+    font-family: Arial, sans-serif;
+  }
+  .back-btn:hover { background: #2c3e6a; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">&#8592; Volver al inicio</a><br>
+  <div id="quiz-area">
+    <div class="header">
+      <h1>&#128220; Quiz: Ley 4251/11 de Lenguas</h1>
+      <div class="progress-bar-bg"><div class="progress-bar" id="pbar" style="width:0%"></div></div>
+      <div class="counter" id="counter">Pregunta 1 de 15</div>
+    </div>
+    <div id="art-label" class="art-label"></div>
+    <div id="question" class="question"></div>
+    <div id="options"></div>
+    <div id="feedback" class="feedback"></div>
+    <button class="btn-next" id="btn-next" onclick="siguiente()">Siguiente &#8594;</button>
+  </div>
+  <div id="resultado-area" class="resultado" style="display:none"></div>
+</div>
+
+<script>
+const articulos = [
+  { art: "Art. 3º",  titulo: "De las lenguas oficiales" },
+  { art: "Art. 5º",  titulo: "De la promoción de las lenguas originarias" },
+  { art: "Art. 7º",  titulo: "De la no discriminación por razones Lingüísticas" },
+  { art: "Art. 8º",  titulo: "Del valor jurídico de las expresiones" },
+  { art: "Art. 9º",  titulo: "De los derechos lingüísticos individuales" },
+  { art: "Art. 10",  titulo: "Derechos lingüísticos colectivos nacionales" },
+  { art: "Art. 12",  titulo: "De la responsabilidad del Estado hacia los pueblos indígenas" },
+  { art: "Art. 14",  titulo: "De las leyes y demás disposiciones normativas" },
+  { art: "Art. 15",  titulo: "Del uso en el ámbito judicial" },
+  { art: "Art. 17",  titulo: "Del conocimiento de las dos lenguas oficiales para ocupar cargos públicos" },
+  { art: "Art. 18",  titulo: "De los documentos de identidad" },
+  { art: "Art. 21",  titulo: "Del respeto a la toponimia" },
+  { art: "Art. 26",  titulo: "De la alfabetización en lengua materna" },
+  { art: "Art. 28º", titulo: "De la enseñanza de las lenguas oficiales" },
+  { art: "Art. 29",  titulo: "De las lenguas oficiales como instrumentos didácticos" }
+];
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function getWrongOptions(correctIdx, count) {
+  const pool = articulos.map((a,i) => i).filter(i => i !== correctIdx);
+  shuffle(pool);
+  return pool.slice(0, count).map(i => articulos[i].titulo);
+}
+
+let preguntas = [];
+let actual = 0;
+let score = 0;
+
+function iniciar() {
+  const shuffled = shuffle([...articulos]);
+  preguntas = shuffled.map(item => {
+    const correctIdx = articulos.indexOf(item);
+    const wrongs = getWrongOptions(correctIdx, 2);
+    const opts = shuffle([item.titulo, wrongs[0], wrongs[1]]);
+    return { art: item.art, titulo: item.titulo, opciones: opts };
+  });
+  actual = 0;
+  score = 0;
+  document.getElementById('resultado-area').style.display = 'none';
+  document.getElementById('quiz-area').style.display = 'block';
+  mostrar();
+}
+
+function mostrar() {
+  const p = preguntas[actual];
+  document.getElementById('pbar').style.width = ((actual / 15) * 100) + '%';
+  document.getElementById('counter').textContent = 'Pregunta ' + (actual + 1) + ' de 15';
+  document.getElementById('art-label').textContent = p.art;
+  document.getElementById('question').textContent = '¿Cuál es el título de este artículo?';
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  fb.textContent = '';
+  document.getElementById('btn-next').className = 'btn-next';
+  const optDiv = document.getElementById('options');
+  optDiv.innerHTML = '';
+  p.opciones.forEach((op, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = op;
+    btn.onclick = () => seleccionar(btn, op, p.titulo);
+    optDiv.appendChild(btn);
+  });
+}
+
+function seleccionar(btn, elegida, correcta) {
+  const allBtns = document.querySelectorAll('.option');
+  allBtns.forEach(b => b.disabled = true);
+  const fb = document.getElementById('feedback');
+  if (elegida === correcta) {
+    btn.classList.add('correct');
+    fb.textContent = '✅ ¡Correcto!';
+    fb.className = 'feedback ok show';
+    score++;
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Incorrecto. La respuesta correcta es: "' + correcta + '"';
+    fb.className = 'feedback fail show';
+    allBtns.forEach(b => { if (b.textContent === correcta) b.classList.add('correct'); });
+  }
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.className = 'btn-next show';
+  nextBtn.textContent = actual < 14 ? 'Siguiente →' : 'Ver resultado';
+}
+
+function siguiente() {
+  actual++;
+  if (actual < 15) {
+    mostrar();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  document.getElementById('quiz-area').style.display = 'none';
+  const pct = Math.round(score / 15 * 100);
+  let emoji = pct === 100 ? '🎉' : pct >= 80 ? '😊' : pct >= 60 ? '😐' : '😓';
+  let msg = pct === 100 ? '¡Perfecto! Dominás todos los artículos.' :
+            pct >= 80 ? 'Muy bien, casi los tenés todos.' :
+            pct >= 60 ? 'Bien, pero podés repasar un poco más.' :
+            'Seguí practicando, vas a mejorar.';
+  document.getElementById('resultado-area').innerHTML =
+    '<div class="emoji">' + emoji + '</div>' +
+    '<h2>Resultado Final</h2>' +
+    '<div class="score">' + score + '/15</div>' +
+    '<p>' + pct + '% correcto &mdash; ' + msg + '</p>' +
+    '<button class="btn-reset" onclick="iniciar()">🔁 Volver a intentar</button>';
+  document.getElementById('resultado-area').style.display = 'block';
+}
+
+iniciar();
+</script>
+</body>
+</html>
