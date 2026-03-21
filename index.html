@@ -5,141 +5,161 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Herramienta de Repaso Guaraní</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing:border-box; margin:0; padding:0; }
   body {
     font-family: Arial, sans-serif;
-    background: #1a2a4a;
+    background: linear-gradient(160deg, #1a2a4a 0%, #1e3355 60%, #1a2e40 100%);
     min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 24px 16px;
+    display: flex; align-items: flex-start; justify-content: center;
+    padding: 28px 16px;
   }
-  .container {
-    text-align: center;
-    width: 100%;
-    max-width: 680px;
+  .container { text-align:center; width:100%; max-width:700px; }
+
+  /* HEADER */
+  .logo { font-size:54px; margin-bottom:10px; filter:drop-shadow(0 3px 6px rgba(0,0,0,0.4)); }
+  h1 {
+    color:white; font-size:26px; font-weight:bold;
+    margin-bottom:4px; letter-spacing:1px;
   }
-  .logo { font-size: 52px; margin-bottom: 10px; }
-  h1 { color: white; font-size: 26px; font-weight: bold; margin-bottom: 6px; letter-spacing: 1px; }
-  .subtitle { font-size: 13px; color: #a0b4cc; margin-bottom: 10px; line-height: 1.6; }
-  .subtitle strong { color: white; }
-  .badge {
-    display: inline-block; background: rgba(255,255,255,0.12);
-    color: #a0b4cc; font-size: 11px; padding: 3px 12px;
-    border-radius: 20px; margin-bottom: 22px;
+  .title-guarani { color:#7db8d8; font-size:14px; font-style:italic; margin-bottom:6px; }
+  .subtitle { font-size:13px; color:#a0b4cc; margin-bottom:0; line-height:1.6; }
+  .subtitle strong { color:white; }
+
+  /* SEPARADOR */
+  .sep {
+    border-top: 2px dashed rgba(255,255,255,0.15);
+    margin: 32px 0 22px; position:relative; text-align:center;
+  }
+  .sep span {
+    background: transparent;
+    color: rgba(255,255,255,0.4); font-size:11px;
+    padding: 0 12px; position:relative; top:-10px;
+    letter-spacing:1px; text-transform:uppercase;
+    background: linear-gradient(160deg,#1a2a4a,#1e3355);
+    display:inline-block;
   }
 
-  /* ── DESPLEGABLES ── */
-  .accordion { margin-bottom: 12px; text-align: left; }
+  /* ACORDEONES */
+  .accordion { margin-bottom:10px; text-align:left; border-radius:10px; overflow:hidden; }
   .acc-header {
-    background: rgba(255,255,255,0.1);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 10px;
-    padding: 13px 18px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: background 0.2s;
-    user-select: none;
+    background: rgba(255,255,255,0.09);
+    color: white; border: 1px solid rgba(255,255,255,0.18);
+    border-radius:10px; padding:13px 18px; cursor:pointer;
+    font-size:14px; font-weight:bold;
+    display:flex; justify-content:space-between; align-items:center;
+    transition: background 0.2s; user-select:none;
   }
-  .acc-header:hover { background: rgba(255,255,255,0.18); }
-  .acc-header .arrow { transition: transform 0.3s; font-size: 12px; }
-  .acc-header.open .arrow { transform: rotate(180deg); }
+  .acc-header:hover { background: rgba(255,255,255,0.16); }
+  .acc-header.open { border-radius:10px 10px 0 0; border-color:rgba(255,255,255,0.3); }
+  .acc-arrow { transition:transform 0.35s; font-size:12px; }
+  .acc-header.open .acc-arrow { transform:rotate(180deg); }
   .acc-body {
-    display: none;
-    background: white;
-    border: 1px solid #dce3ed;
-    border-top: none;
-    border-radius: 0 0 10px 10px;
-    padding: 18px 20px;
-    text-align: left;
-    font-size: 13px;
-    color: #2c3e50;
-    line-height: 1.7;
+    background:white; border:1px solid rgba(255,255,255,0.18);
+    border-top:none; border-radius:0 0 10px 10px;
+    max-height:0; overflow:hidden;
+    transition: max-height 0.4s ease, padding 0.3s;
+    padding: 0 20px; font-size:13px; color:#2c3e50; line-height:1.7;
   }
-  .acc-body.open { display: block; }
+  .acc-body.open { max-height:2000px; padding:18px 20px; }
 
-  /* artículos */
-  .art-intro { 
-    background: #eaf4fb; border-left: 3px solid #2980b9;
-    padding: 8px 12px; border-radius: 5px; margin-bottom: 12px;
-    font-size: 12px; color: #1a5276; font-style: italic;
+  /* contenido acordeones */
+  .art-intro {
+    background:#eaf4fb; border-left:3px solid #2980b9;
+    padding:8px 12px; border-radius:5px; margin-bottom:12px;
+    font-size:12px; color:#1a5276; font-style:italic;
   }
-  .art-list { list-style: none; padding: 0; }
-  .art-list li {
-    padding: 7px 10px; border-bottom: 1px solid #f0f0f0;
-    font-size: 13px;
-  }
-  .art-list li:last-child { border-bottom: none; }
-  .art-list li span { color: #2980b9; font-weight: bold; margin-right: 6px; }
-
-  /* reglas */
-  .regla-bloque { margin-bottom: 18px; }
+  .art-list { list-style:none; padding:0; }
+  .art-list li { padding:7px 10px; border-bottom:1px solid #f0f0f0; font-size:13px; }
+  .art-list li:last-child { border-bottom:none; }
+  .art-list li span { color:#2980b9; font-weight:bold; margin-right:6px; }
+  .regla-bloque { margin-bottom:18px; }
   .regla-titulo {
-    font-weight: bold; color: #1a2a4a; font-size: 13px;
-    background: #f0f4ff; padding: 6px 10px; border-radius: 6px;
-    margin-bottom: 8px; border-left: 3px solid #2980b9;
+    font-weight:bold; color:#1a2a4a; font-size:13px;
+    background:#f0f4ff; padding:6px 10px; border-radius:6px;
+    margin-bottom:8px; border-left:3px solid #2980b9;
   }
-  .regla-body { font-size: 13px; line-height: 1.7; color: #333; padding: 0 4px; }
-  .regla-body p { margin-bottom: 6px; }
-  .regla-body .techapyra { 
-    font-style: italic; color: #6a1b9a;
-    background: #f9f0ff; padding: 4px 8px;
-    border-radius: 4px; display: block; margin: 4px 0;
-    font-size: 12px;
+  .regla-body { font-size:13px; line-height:1.7; color:#333; padding:0 4px; }
+  .regla-body p { margin-bottom:6px; }
+  .regla-body .techapyra {
+    font-style:italic; color:#6a1b9a; background:#f9f0ff;
+    padding:4px 8px; border-radius:4px; display:block; margin:4px 0; font-size:12px;
   }
   .alfabeto {
-    background: #f7f9fc; border: 1px solid #dce3ed;
-    border-radius: 8px; padding: 10px 14px;
-    font-family: Georgia, serif; font-size: 14px;
-    color: #1a2a4a; line-height: 1.9; margin: 8px 0;
-    letter-spacing: 1px;
+    background:#f7f9fc; border:1px solid #dce3ed; border-radius:8px;
+    padding:10px 14px; font-family:Georgia,serif; font-size:14px;
+    color:#1a2a4a; line-height:1.9; margin:8px 0; letter-spacing:1px;
   }
 
-  /* ── CARDS ── */
-  .cards { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; margin-top: 22px; }
+  /* CARDS GRID */
+  .cards-grid {
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+    margin-top:22px;
+  }
+  @media (max-width:520px) {
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+  }
   .card {
-    background: white; border-radius: 16px; padding: 22px 18px;
-    width: 192px; text-decoration: none; color: inherit;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
-    transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+    background:white; border-radius:14px; padding:20px 14px;
+    text-decoration:none; color:inherit;
+    box-shadow:0 6px 20px rgba(0,0,0,0.25);
+    transition:transform 0.2s, box-shadow 0.2s;
+    position:relative; display:flex; flex-direction:column;
+    align-items:center; text-align:center;
   }
-  .card:hover { transform: translateY(-5px); box-shadow: 0 12px 36px rgba(0,0,0,0.35); }
-  .card .icon { font-size: 40px; margin-bottom: 12px; }
-  .card h2 { font-size: 14px; color: #1a2a4a; margin-bottom: 7px; line-height: 1.4; }
-  .card p { font-size: 11px; color: #777; line-height: 1.5; margin-bottom: 14px; }
-  .card .tag { display: inline-block; padding: 3px 10px; border-radius: 14px; font-size: 11px; font-weight: bold; }
-  .tag-blue   { background: #e3f2fd; color: #1565c0; }
-  .tag-purple { background: #f3e5f5; color: #6a1b9a; }
-  .tag-green  { background: #e8f5e9; color: #2e7d32; }
-  .tag-orange { background: #fff3e0; color: #e65100; }
-  .tag-teal   { background: #e0f2f1; color: #00695c; }
+  .card:hover { transform:translateY(-6px); box-shadow:0 14px 32px rgba(0,0,0,0.35); }
+  .card-num {
+    position:absolute; top:10px; left:12px;
+    background:#1a2a4a; color:white; font-size:10px;
+    font-weight:bold; width:20px; height:20px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .card .icon { font-size:38px; margin-bottom:10px; }
+  .card h2 { font-size:13px; color:#1a2a4a; margin-bottom:6px; line-height:1.4; flex:1; }
+  .card-meta {
+    display:flex; gap:5px; flex-wrap:wrap; justify-content:center; margin-top:10px;
+  }
+  .tag {
+    display:inline-block; padding:2px 8px; border-radius:12px;
+    font-size:10px; font-weight:bold;
+  }
+  .tag-blue   { background:#e3f2fd; color:#1565c0; }
+  .tag-purple { background:#f3e5f5; color:#6a1b9a; }
+  .tag-green  { background:#e8f5e9; color:#2e7d32; }
+  .tag-orange { background:#fff3e0; color:#e65100; }
+  .tag-teal   { background:#e0f2f1; color:#00695c; }
+  .tag-time   { background:#fafafa; color:#888; border:1px solid #e0e0e0; }
+
+  /* FOOTER */
   .footer {
-    color: #4a6a8a; font-size: 11px; margin-top: 28px;
-    line-height: 1.5; padding: 0 10px;
+    color:#4a6a8a; font-size:11px; margin-top:28px;
+    line-height:1.6; padding:0 10px;
   }
+  .footer strong { color:#6a8aaa; }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="logo">&#127798;</div>
-  <h1>Herramienta de Repaso Guaraní</h1>
-  <p class="subtitle">
-    3 herramientas de repaso instruidas por la <strong>Prof. Nery Fátima Benítez Ramírez</strong><br>
-    para la Materia <strong>GUARANÍ I</strong>
-  </p>
-  <div class="badge">5 herramientas disponibles</div>
 
-  <!-- ── ACORDEÓN 1: ARTÍCULOS ── -->
+  <div class="logo" style="filter:drop-shadow(0 0 8px rgba(220,50,30,0.6))">&#127798;</div>
+  <h1>Herramienta de Repaso Guaraní</h1>
+  <p class="title-guarani">Ñe'ẽ Repaso — Guaraní I</p>
+  <p class="subtitle">
+    5 Herramientas interactivas extraídas del cuestionario de la<br>
+    <strong>Prof. Nery Fátima Benítez Ramírez de Dios</strong>
+  </p>
+
+  <!-- SEP 1 -->
+  <div class="sep">
+    <span>&#128216; Previo a los ejercicios, sería interesante que leas estos artículos</span>
+  </div>
+
+  <!-- ACORDEÓN 1 -->
   <div class="accordion">
     <div class="acc-header" onclick="toggleAcc(this)">
       &#128220; Artículos importantes de la Ley 4251
-      <span class="arrow">&#9660;</span>
+      <span class="acc-arrow">&#9660;</span>
     </div>
     <div class="acc-body">
       <div class="art-intro">
@@ -165,11 +185,11 @@
     </div>
   </div>
 
-  <!-- ── ACORDEÓN 2: REGLAS ── -->
+  <!-- ACORDEÓN 2 -->
   <div class="accordion">
     <div class="acc-header" onclick="toggleAcc(this)">
       &#128218; Reglas del Guaraní
-      <span class="arrow">&#9660;</span>
+      <span class="acc-arrow">&#9660;</span>
     </div>
     <div class="acc-body">
 
@@ -237,56 +257,86 @@
     </div>
   </div>
 
-  <!-- ── SEPARADOR ── -->
-  <div style="border-top: 2px dashed rgba(255,255,255,0.15); margin: 28px 0 24px; position:relative; text-align:center;">
-    <span style="background:#1a2a4a; color: rgba(255,255,255,0.4); font-size:11px; padding: 0 12px; position:relative; top:-10px; letter-spacing:1px; text-transform:uppercase;">Ejercicios interactivos</span>
+  <!-- SEP 2 -->
+  <div class="sep">
+    <span>Ejercicios interactivos</span>
   </div>
 
-  <!-- ── CARDS ── -->
-  <div class="cards">
+  <!-- CARDS -->
+  <div class="cards-grid">
+
     <a class="card" href="quiz_ley4251_v2.html">
+      <div class="card-num">1</div>
       <div class="icon">&#128220;</div>
       <h2>Quiz: Artículos de la Ley de Lenguas</h2>
-      <p>15 preguntas en orden aleatorio con corrección automática.</p>
-      <span class="tag tag-blue">15 preguntas</span>
+      <div class="card-meta">
+        <span class="tag tag-blue">15 preguntas</span>
+        <span class="tag tag-time">⏱ 5 min</span>
+      </div>
     </a>
+
     <a class="card" href="guarani_clasificador_v5.html">
+      <div class="card-num">2</div>
       <div class="icon">&#127757;</div>
       <h2>Identificador de Palabras Guaraní</h2>
-      <p>Clasificá palabras en nasales, orales o con digrama. 3 textos disponibles.</p>
-      <span class="tag tag-purple">3 textos</span>
+      <div class="card-meta">
+        <span class="tag tag-purple">3 textos</span>
+        <span class="tag tag-time">⏱ 8 min</span>
+      </div>
     </a>
+
     <a class="card" href="onomatopeyas_v2.html">
+      <div class="card-num">3</div>
       <div class="icon">&#127767;</div>
       <h2>Identificar Palabras Onomatopéyicas</h2>
-      <p>3 niveles de dificultad. Encontrá las onomatopeyas entre las palabras.</p>
-      <span class="tag tag-green">3 niveles</span>
+      <div class="card-meta">
+        <span class="tag tag-green">3 niveles</span>
+        <span class="tag tag-time">⏱ 5 min</span>
+      </div>
     </a>
+
     <a class="card" href="digramas_completar_v4.html">
+      <div class="card-num">4</div>
       <div class="icon">&#9999;&#65039;</div>
-      <h2>Aipuru Pundiekõi ha Amoimba</h2>
-      <p>Arrastrá los digramas y completá las 13 palabras en guaraní.</p>
-      <span class="tag tag-orange">13 palabras</span>
+      <h2>Coloca el Diagrama</h2>
+      <div class="card-meta">
+        <span class="tag tag-orange">13 palabras</span>
+        <span class="tag tag-time">⏱ 5 min</span>
+      </div>
     </a>
+
     <a class="card" href="acento_guarani.html">
-      <div class="icon"><span style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;background:linear-gradient(135deg,#00897b,#26a69a);border-radius:50%;color:white;font-size:28px;font-weight:bold;font-family:Georgia,serif;line-height:1">&#180;</span></div>
+      <div class="card-num">5</div>
+      <div class="icon"><span style="display:inline-flex;align-items:center;justify-content:center;width:50px;height:50px;background:linear-gradient(135deg,#00897b,#26a69a);border-radius:50%;color:white;font-size:26px;font-weight:bold;font-family:Georgia,serif">&#180;</span></div>
       <h2>¿Dónde va el acento?</h2>
-      <p>Seleccioná la vocal tónica en 15 palabras guaraní. Incluye vocales nasales.</p>
-      <span class="tag tag-teal">15 palabras</span>
+      <div class="card-meta">
+        <span class="tag tag-teal">15 palabras</span>
+        <span class="tag tag-time">⏱ 5 min</span>
+      </div>
     </a>
+
+    <a class="card card-last" href="palabras_repeticion.html">
+      <div class="card-num">6</div>
+      <div class="icon">&#128257;</div>
+      <h2>Palabras Con Repeticiones</h2>
+      <div class="card-meta">
+        <span class="tag tag-red">30 palabras</span>
+        <span class="tag tag-time">⏱ 5 min</span>
+      </div>
+    </a>
+
   </div>
 
   <p class="footer">
-    Herramientas de estudio desarrollada por SC para uso de alumnos de la<br>
-    <strong style="color:#6a8aaa">Escuela de Ciencias Sociales y Políticas de la UNA</strong><br>
-    con materiales de la Prof. antes mencionada.
+    Herramientas de estudio desarrolladas por SC para uso de alumnos de la<br>
+    <strong>Escuela de Ciencias Sociales y Políticas de la UNA</strong>
   </p>
-</div>
 
+</div>
 <script>
 function toggleAcc(header) {
-  header.classList.toggle('open');
   const body = header.nextElementSibling;
+  header.classList.toggle('open');
   body.classList.toggle('open');
 }
 </script>

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palabras Con Repeticiones</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    font-family: Arial, sans-serif; background: #1a2a4a;
+    min-height:100vh; display:flex; align-items:flex-start;
+    justify-content:center; padding:20px;
+  }
+  .container {
+    background:white; border-radius:16px; padding:26px;
+    width:100%; max-width:680px;
+    box-shadow:0 8px 30px rgba(0,0,0,0.3); margin-top:10px;
+  }
+  a.back-btn {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:7px 13px; background:#1a2a4a; color:white;
+    border-radius:8px; font-size:12px; text-decoration:none; margin-bottom:14px;
+  }
+  a.back-btn:hover { background:#2c3e6a; }
+  h1 { font-size:18px; color:#1a2a4a; text-align:center; margin-bottom:4px; }
+  .guarani-title { font-size:13px; color:#2980b9; text-align:center; font-style:italic; margin-bottom:14px; }
+
+  .descripcion {
+    background:#eaf4fb; border-left:4px solid #2980b9;
+    padding:10px 14px; border-radius:7px;
+    font-size:13px; color:#1a3a5a; margin-bottom:16px; line-height:1.6;
+  }
+  .instruccion {
+    background:#fff9c4; border-left:4px solid #f9a825;
+    padding:9px 13px; border-radius:7px;
+    font-size:13px; color:#5d4037; margin-bottom:16px; line-height:1.5;
+  }
+
+  /* SCORE */
+  .score-row {
+    display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;
+  }
+  .score-item {
+    flex:1; min-width:80px; text-align:center;
+    padding:7px 6px; border-radius:8px; font-size:11px;
+  }
+  .score-item span { display:block; font-size:20px; font-weight:bold; }
+  .sc-sel  { background:#e3f2fd; color:#1565c0; }
+  .sc-ok   { background:#e8f5e9; color:#2e7d32; }
+  .sc-miss { background:#fff3e0; color:#e65100; }
+  .sc-err  { background:#ffebee; color:#b71c1c; }
+
+  /* PALABRAS GRID */
+  .palabras-grid {
+    display:flex; flex-wrap:wrap; gap:9px;
+    margin-bottom:18px; justify-content:center;
+  }
+  .pal-btn {
+    padding:9px 16px; border:2px solid #dce3ed;
+    border-radius:22px; background:#f7f9fc;
+    font-size:14px; cursor:pointer; font-family:Georgia,serif;
+    transition:all 0.18s; color:#2c3e50; user-select:none;
+  }
+  .pal-btn:hover:not(.bloqueada) { background:#eaf4fb; border-color:#2980b9; }
+  .pal-btn.seleccionada { background:#d6eaf8; border-color:#2980b9; color:#1a2a4a; font-weight:bold; transform:scale(1.05); }
+  .pal-btn.correcto     { background:#d5f5e3; border-color:#27ae60; color:#1a7a40; font-weight:bold; cursor:default; }
+  .pal-btn.falso-pos    { background:#fadbd8; border-color:#e74c3c; color:#a93226; font-weight:bold; cursor:default; }
+  .pal-btn.perdida      { background:#fff3cd; border-color:#f9a825; color:#7d5a00; font-weight:bold; cursor:default; }
+  .pal-btn.bloqueada    { cursor:default; }
+
+  /* BOTONES */
+  .btn-row { display:flex; gap:10px; }
+  .btn-verificar {
+    flex:2; padding:13px; background:#2980b9; color:white;
+    border:none; border-radius:10px; font-size:15px; font-weight:bold; cursor:pointer;
+  }
+  .btn-verificar:hover { background:#2471a3; }
+  .btn-reset {
+    flex:1; padding:13px; background:#e67e22; color:white;
+    border:none; border-radius:10px; font-size:14px; font-weight:bold; cursor:pointer;
+  }
+  .btn-reset:hover { background:#ca6f1e; }
+
+  /* FEEDBACK */
+  .feedback {
+    padding:11px 14px; border-radius:9px; font-size:14px;
+    font-weight:bold; text-align:center; margin-bottom:14px;
+  }
+  .feedback.ok     { background:#d5f5e3; color:#1a7a40; }
+  .feedback.aprobado { background:linear-gradient(135deg,#d5f5e3,#d6eaf8); color:#1a5276; border:2px solid #27ae60; }
+  .feedback.fail   { background:#fadbd8; color:#a93226; }
+  .feedback.hint   { background:#fff9c4; color:#7d6608; }
+
+  /* LEYENDA */
+  .leyenda {
+    display:flex; gap:10px; flex-wrap:wrap; justify-content:center;
+    font-size:11px; color:#666; margin-top:14px;
+  }
+  .leg { display:flex; align-items:center; gap:4px; }
+  .leg-dot { width:12px; height:12px; border-radius:6px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">&#8592; Volver al inicio</a>
+  <h1>&#128257; Palabras Con Repeticiones</h1>
+  <p class="guarani-title">Hetaitéva oñemombe'u peteĩha — Las que se repiten</p>
+
+  <div class="descripcion">
+    En guaraní, muchas palabras se forman <strong>repitiendo</strong> una raíz o sílaba para intensificar
+    el significado: velocidad, tamaño, sensación o modo de ser.
+    <br><em>Ejemplo: <strong>mbegué-mbegué</strong> = muy despacio.</em>
+  </div>
+
+  <div class="instruccion">
+    &#128073; Hacé clic en todas las palabras que tengan <strong>repetición</strong>.<br>
+    Luego presioná <strong>"Verificar"</strong>. ¡Tenés que encontrarlas todas para aprobar!
+  </div>
+
+  <div class="score-row">
+    <div class="score-item sc-sel"><span id="cnt-sel">0</span>Seleccionadas</div>
+    <div class="score-item sc-ok"><span id="cnt-ok">0</span>Correctas</div>
+    <div class="score-item sc-miss"><span id="cnt-miss">0</span>Faltaron</div>
+    <div class="score-item sc-err"><span id="cnt-err">0</span>Incorrectas</div>
+  </div>
+
+  <div class="feedback hint" id="feedback">Seleccioná las palabras con repetición y presioná Verificar.</div>
+
+  <div class="palabras-grid" id="grid"></div>
+
+  <div class="btn-row">
+    <button class="btn-verificar" id="btn-ver" onclick="verificar()">&#10003; Verificar respuestas</button>
+    <button class="btn-reset" onclick="resetJuego()">&#8635; Reiniciar</button>
+  </div>
+
+  <div class="leyenda">
+    <div class="leg"><div class="leg-dot" style="background:#d5f5e3;border:1px solid #27ae60"></div> Con repetición ✓</div>
+    <div class="leg"><div class="leg-dot" style="background:#fadbd8;border:1px solid #e74c3c"></div> No tiene repetición</div>
+    <div class="leg"><div class="leg-dot" style="background:#fff3cd;border:1px solid #f9a825"></div> Repetición no marcada</div>
+  </div>
+</div>
+
+<script>
+const TODAS = [
+  { w: "aí-vaí",          rep: true  },
+  { w: "Puku-puku",       rep: true  },
+  { w: "Kiri-kiri",       rep: true  },
+  { w: "Asy-asy",         rep: true  },
+  { w: "Mbegué-mbegué",   rep: true  },
+  { w: "Michĩ-michĩ",     rep: true  },
+  { w: "Overa-vera",      rep: true  },
+  { w: "Sarambi-sarambi", rep: true  },
+  { w: "Katu-katu",       rep: true  },
+  { w: "Hory-hory",       rep: true  },
+  { w: "Piro'y-piro'y",   rep: true  },
+  { w: "Pererĩ-pererĩ",   rep: true  },
+  { w: "Jagua",           rep: false },
+  { w: "Mbarakaja",       rep: false },
+  { w: "Kuarahy",         rep: false },
+  { w: "Jasy",            rep: false },
+  { w: "Ama",             rep: false },
+  { w: "Yvoty",           rep: false },
+  { w: "Yvy",             rep: false },
+  { w: "Y",               rep: false },
+  { w: "Tape",            rep: false },
+  { w: "Óga",             rep: false },
+  { w: "Kóga",            rep: false },
+  { w: "Po",              rep: false },
+  { w: "Teta",            rep: false },
+  { w: "Anga",            rep: false },
+  { w: "Py'a",            rep: false },
+  { w: "Akã",             rep: false },
+  { w: "Naná",            rep: false },
+  { w: "Ka'ay",           rep: false },
+];
+
+let palabras = [];
+let seleccionadas = new Set();
+let verificado = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderGrid() {
+  palabras = shuffle(TODAS);
+  seleccionadas.clear();
+  verificado = false;
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  palabras.forEach((p, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'pal-btn';
+    btn.id = 'pb-' + i;
+    btn.textContent = p.w;
+    btn.onclick = () => togglePal(i, btn);
+    grid.appendChild(btn);
+  });
+  updateScores(0,0,0,0);
+  document.getElementById('btn-ver').style.display = 'block';
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback hint';
+  fb.textContent = 'Seleccioná las palabras con repetición y presioná Verificar.';
+}
+
+function togglePal(i, btn) {
+  if (verificado) return;
+  if (seleccionadas.has(i)) {
+    seleccionadas.delete(i);
+    btn.classList.remove('seleccionada');
+  } else {
+    seleccionadas.add(i);
+    btn.classList.add('seleccionada');
+  }
+  document.getElementById('cnt-sel').textContent = seleccionadas.size;
+}
+
+function verificar() {
+  if (verificado) return;
+  verificado = true;
+  let ok = 0, falsoPos = 0, perdidas = 0;
+  const totalRep = palabras.filter(p => p.rep).length;
+
+  palabras.forEach((p, i) => {
+    const btn = document.getElementById('pb-' + i);
+    btn.classList.remove('seleccionada');
+    btn.classList.add('bloqueada');
+    if (seleccionadas.has(i)) {
+      if (p.rep) { btn.classList.add('correcto'); ok++; }
+      else        { btn.classList.add('falso-pos'); falsoPos++; }
+    } else {
+      if (p.rep) { btn.classList.add('perdida'); perdidas++; }
+    }
+  });
+
+  updateScores(seleccionadas.size, ok, perdidas, falsoPos);
+  const fb = document.getElementById('feedback');
+  document.getElementById('btn-ver').style.display = 'none';
+
+  if (ok === totalRep && falsoPos === 0) {
+    fb.className = 'feedback aprobado';
+    fb.innerHTML = '&#127942; ¡APROBADO! Encontraste todas las palabras con repetición. ¡Excelente!';
+  } else {
+    fb.className = 'feedback fail';
+    fb.textContent = `❌ ${ok} de ${totalRep} correctas — ${falsoPos} incorrectas — ${perdidas} sin marcar. ¡Revisá y reintentá!`;
+  }
+}
+
+function updateScores(sel, ok, miss, err) {
+  document.getElementById('cnt-sel').textContent  = sel;
+  document.getElementById('cnt-ok').textContent   = ok;
+  document.getElementById('cnt-miss').textContent = miss;
+  document.getElementById('cnt-err').textContent  = err;
+}
+
+function resetJuego() { renderGrid(); }
+
+renderGrid();
+</script>
+</body>
+</html>
