@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aipuru Pundiekõi ha Amoimba</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif; background: #1a2a4a;
+    min-height: 100vh; display: flex; align-items: flex-start;
+    justify-content: center; padding: 20px;
+  }
+  .container {
+    background: white; border-radius: 16px; padding: 24px;
+    width: 100%; max-width: 700px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3); margin-top: 10px;
+  }
+  a.back-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 13px; background: #1a2a4a; color: white;
+    border-radius: 8px; font-size: 12px; text-decoration: none; margin-bottom: 14px;
+  }
+  a.back-btn:hover { background: #2c3e6a; }
+  h1 { font-size: 17px; color: #1a2a4a; text-align: center; margin-bottom: 3px; }
+  .guarani-title { font-size: 13px; color: #2980b9; text-align: center; font-style: italic; margin-bottom: 14px; }
+  .instruccion {
+    background: #eaf4fb; border-left: 4px solid #2980b9;
+    padding: 10px 14px; border-radius: 7px;
+    font-size: 13px; color: #1a3a5a; margin-bottom: 16px; line-height: 1.6;
+  }
+  .paleta-label { font-size: 12px; font-weight: bold; color: #555; margin-bottom: 8px; }
+  .paleta {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    background: #f0f4ff; border: 2px dashed #2980b9;
+    border-radius: 10px; padding: 14px 16px; margin-bottom: 20px;
+    justify-content: center;
+  }
+  .chip {
+    padding: 10px 22px; background: #2980b9; color: white;
+    border-radius: 8px; font-size: 17px; font-weight: bold;
+    cursor: grab; user-select: none; border: 3px solid #2471a3;
+    transition: all 0.2s; font-family: Georgia, serif;
+  }
+  .chip:hover { background: #1f6391; transform: scale(1.06); }
+  .chip.selected { background: #e67e22; border-color: #ca6f1e; transform: scale(1.1); cursor: pointer; }
+  .chip.dragging { opacity: 0.4; }
+  .fila-label {
+    font-size: 11px; font-weight: bold; color: #888;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .fila {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-bottom: 20px; justify-content: center;
+  }
+  .word-card {
+    background: #fafafa; border: 1px solid #dce3ed;
+    border-radius: 10px; padding: 12px 14px;
+    text-align: center; min-width: 112px;
+  }
+  .word-display {
+    display: flex; align-items: center; justify-content: center;
+    gap: 1px; font-family: Georgia, serif; font-size: 19px;
+    color: #1a2a4a; margin-bottom: 6px;
+  }
+  .drop-zone {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 38px; height: 32px; padding: 0 4px;
+    border: 2px dashed #2980b9; border-radius: 6px;
+    background: #eaf4fb; color: #2980b9; font-size: 15px;
+    font-weight: bold; cursor: pointer; transition: all 0.2s;
+    font-family: Georgia, serif;
+  }
+  .drop-zone:hover { background: #d6eaf8; border-color: #1a5276; }
+  .drop-zone.drag-over { background: #aed6f1; transform: scale(1.12); }
+  .drop-zone.filled { background: #d6eaf8; border-style: solid; color: #1a2a4a; }
+  .drop-zone.correct { background: #d5f5e3 !important; border: 2px solid #27ae60 !important; color: #1a7a40; }
+  .drop-zone.wrong   { background: #fadbd8 !important; border: 2px solid #e74c3c !important; color: #a93226; }
+  .word-traduccion { font-size: 11px; color: #888; font-style: italic; }
+  .btn-row { display: flex; gap: 10px; margin-top: 4px; }
+  .btn-verificar {
+    flex: 2; padding: 13px; background: #27ae60; color: white;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: bold; cursor: pointer;
+  }
+  .btn-verificar:hover { background: #219150; }
+  .btn-reset {
+    flex: 1; padding: 13px; background: #e67e22; color: white;
+    border: none; border-radius: 10px; font-size: 14px; font-weight: bold; cursor: pointer;
+  }
+  .btn-reset:hover { background: #ca6f1e; }
+  .feedback {
+    padding: 10px 14px; border-radius: 8px; font-size: 14px;
+    font-weight: bold; text-align: center; margin: 14px 0;
+  }
+  .feedback.ok   { background: #d5f5e3; color: #1a7a40; }
+  .feedback.fail { background: #fadbd8; color: #a93226; }
+  .feedback.hint { background: #fff9c4; color: #7d6608; }
+  .leyenda {
+    display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+    font-size: 11px; color: #666; margin-top: 14px;
+  }
+  .leg { display: flex; align-items: center; gap: 4px; }
+  .leg-box { width: 14px; height: 14px; border-radius: 3px; border: 1px solid #ccc; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back-btn" href="index.html">&#8592; Volver al inicio</a>
+  <h1>&#9999;&#65039; Aipuru Pundiekõi ha Amoimba</h1>
+  <p class="guarani-title">Utilizo Digramas y Completo</p>
+
+  <div class="instruccion">
+    &#128073; <strong>1.</strong> Hacé clic en un <strong>digrama</strong> de la paleta (se pone naranja).<br>
+    &#128073; <strong>2.</strong> Luego hacé clic en el <strong>casillero</strong> de la palabra para completarla.<br>
+    &#128073; También podés <strong>arrastrar</strong> el digrama directamente al casillero.<br>
+    <small>&#8635; Clic en un casillero ya completado para vaciarlo.</small>
+  </div>
+
+  <p class="paleta-label">&#127381; Digramas — hacé clic para seleccionar:</p>
+  <div class="paleta">
+    <div class="chip" draggable="true" data-dg="mb" onclick="selChip(this)">mb</div>
+    <div class="chip" draggable="true" data-dg="nd" onclick="selChip(this)">nd</div>
+    <div class="chip" draggable="true" data-dg="ch" onclick="selChip(this)">ch</div>
+    <div class="chip" draggable="true" data-dg="ng" onclick="selChip(this)">ng</div>
+    <div class="chip" draggable="true" data-dg="nt" onclick="selChip(this)">nt</div>
+  </div>
+
+  <p class="fila-label">Fila 1</p>
+  <div class="fila">
+    <div class="word-card">
+      <div class="word-display"><span class="letra">Ña</span><div class="drop-zone" data-answer="nd" data-id="0" onclick="clickZone(this)"></div><span class="letra">u</span></div>
+      <div class="word-traduccion">ñandú / avestruz</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><div class="drop-zone" data-answer="mb" data-id="1" onclick="clickZone(this)"></div><span class="letra">arakaja</span></div>
+      <div class="word-traduccion">gato</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">Ipora</span><div class="drop-zone" data-answer="nt" data-id="2" onclick="clickZone(this)"></div><span class="letra">e</span></div>
+      <div class="word-traduccion">mejor / excelente</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">Oiku</span><div class="drop-zone" data-answer="nd" data-id="3" onclick="clickZone(this)"></div><span class="letra">aha</span></div>
+      <div class="word-traduccion">van juntos</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">Ka</span><div class="drop-zone" data-answer="mb" data-id="4" onclick="clickZone(this)"></div><span class="letra">y</span></div>
+      <div class="word-traduccion">leche</div>
+    </div>
+  </div>
+
+  <p class="fila-label">Fila 2</p>
+  <div class="fila">
+    <div class="word-card">
+      <div class="word-display"><span class="letra">Na</span><div class="drop-zone" data-answer="mb" data-id="5" onclick="clickZone(this)"></div><span class="letra">i</span></div>
+      <div class="word-traduccion">oreja</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">a</span><div class="drop-zone" data-answer="ng" data-id="6" onclick="clickZone(this)"></div><span class="letra">uja</span></div>
+      <div class="word-traduccion">ratón</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">a</span><div class="drop-zone" data-answer="ng" data-id="7" onclick="clickZone(this)"></div><span class="letra">ete</span></div>
+      <div class="word-traduccion">de verdad</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">sapy'á</span><div class="drop-zone" data-answer="nt" data-id="8" onclick="clickZone(this)"></div><span class="letra">e</span></div>
+      <div class="word-traduccion">de repente</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">ka</span><div class="drop-zone" data-answer="mb" data-id="9" onclick="clickZone(this)"></div><span class="letra">uchi</span></div>
+      <div class="word-traduccion">jarra de barro</div>
+    </div>
+  </div>
+
+  <p class="fila-label">Fila 3</p>
+  <div class="fila">
+    <div class="word-card">
+      <div class="word-display"><span class="letra">Pana</span><div class="drop-zone" data-answer="mb" data-id="10" onclick="clickZone(this)"></div><span class="letra">i</span></div>
+      <div class="word-traduccion">mariposa</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><span class="letra">Ma</span><div class="drop-zone" data-answer="nd" data-id="11" onclick="clickZone(this)"></div><span class="letra">yju</span></div>
+      <div class="word-traduccion">algodón</div>
+    </div>
+    <div class="word-card">
+      <div class="word-display"><div class="drop-zone" data-answer="mb" data-id="12" onclick="clickZone(this)"></div><span class="letra">ojojaha</span></div>
+      <div class="word-traduccion">unión / reunión</div>
+    </div>
+  </div>
+
+  <div class="feedback hint" id="feedback">Completá todos los casilleros y presioná Verificar.</div>
+  <div class="btn-row">
+    <button class="btn-verificar" onclick="verificar()">&#10003; Verificar respuestas</button>
+    <button class="btn-reset" onclick="resetAll()">&#8635; Reiniciar</button>
+  </div>
+  <div class="leyenda">
+    <div class="leg"><div class="leg-box" style="background:#d5f5e3;border-color:#27ae60"></div> Correcto</div>
+    <div class="leg"><div class="leg-box" style="background:#fadbd8;border-color:#e74c3c"></div> Incorrecto</div>
+    <div class="leg"><div class="leg-box" style="background:#eaf4fb;border-color:#2980b9"></div> Sin completar</div>
+  </div>
+</div>
+
+<script>
+let selectedChip = null;
+
+function selChip(chip) {
+  if (selectedChip) selectedChip.classList.remove('selected');
+  if (selectedChip === chip) { selectedChip = null; return; }
+  selectedChip = chip;
+  chip.classList.add('selected');
+}
+function clickZone(zone) {
+  if (zone.classList.contains('correct')) return;
+  if (selectedChip) {
+    fillZone(zone, selectedChip.dataset.dg);
+    selectedChip.classList.remove('selected');
+    selectedChip = null;
+  } else if (zone.classList.contains('filled')) {
+    clearZone(zone);
+  }
+}
+function fillZone(zone, dg) {
+  zone.textContent = dg;
+  zone.dataset.filled = dg;
+  zone.classList.add('filled');
+  zone.classList.remove('wrong', 'correct');
+}
+function clearZone(zone) {
+  zone.textContent = '';
+  zone.dataset.filled = '';
+  zone.classList.remove('filled', 'correct', 'wrong');
+}
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('dragstart', e => {
+    e.dataTransfer.setData('dg', chip.dataset.dg);
+    chip.classList.add('dragging');
+  });
+  chip.addEventListener('dragend', () => chip.classList.remove('dragging'));
+});
+document.querySelectorAll('.drop-zone').forEach(zone => {
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    if (zone.classList.contains('correct')) return;
+    fillZone(zone, e.dataTransfer.getData('dg'));
+  });
+});
+function verificar() {
+  const zones = document.querySelectorAll('.drop-zone');
+  let empty = 0, correct = 0, wrong = 0;
+  zones.forEach(z => {
+    if (!z.dataset.filled) { empty++; return; }
+    if (z.dataset.filled === z.dataset.answer) {
+      z.classList.add('correct'); z.classList.remove('wrong', 'filled'); correct++;
+    } else {
+      z.classList.add('wrong'); z.classList.remove('correct'); wrong++;
+    }
+  });
+  const fb = document.getElementById('feedback');
+  if (empty > 0) {
+    fb.className = 'feedback hint';
+    fb.textContent = '⚠️ Faltan ' + empty + ' casillero(s) por completar.';
+  } else if (wrong === 0) {
+    fb.className = 'feedback ok';
+    fb.textContent = '✅ ¡Perfecto! Todas correctas. ¡Dominás los digramas del guaraní!';
+  } else {
+    fb.className = 'feedback fail';
+    fb.textContent = '❌ ' + correct + ' correctas y ' + wrong + ' incorrectas. ¡Revisá las marcadas en rojo!';
+  }
+}
+function resetAll() {
+  document.querySelectorAll('.drop-zone').forEach(z => clearZone(z));
+  if (selectedChip) { selectedChip.classList.remove('selected'); selectedChip = null; }
+  document.getElementById('feedback').className = 'feedback hint';
+  document.getElementById('feedback').textContent = 'Completá todos los casilleros y presioná Verificar.';
+}
+</script>
+</body>
+</html>
