@@ -162,22 +162,8 @@
       <span class="acc-arrow">&#9660;</span>
     </div>
     <div class="acc-body">
-      <div class="art-intro" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-        <span>Estos son los <strong>15 artículos</strong> que la Prof. considera importante saber de la Ley 4251/11</span>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <button id="btn-leer" onclick="leerArticulos()" style="
-            padding:5px 12px;background:#2980b9;color:white;border:none;
-            border-radius:16px;font-size:12px;font-weight:bold;cursor:pointer;
-            display:flex;align-items:center;gap:4px;">
-            &#128266; Leer
-          </button>
-          <button id="btn-detener" onclick="detenerLectura()" style="
-            padding:5px 12px;background:#e74c3c;color:white;border:none;
-            border-radius:16px;font-size:12px;font-weight:bold;cursor:pointer;
-            display:none;align-items:center;gap:4px;">
-            &#9632; Detener
-          </button>
-        </div>
+      <div class="art-intro">
+        Estos son los <strong>15 artículos</strong> que la Prof. considera importante saber de la Ley 4251/11
       </div>
       <ul class="art-list">
         <li><span>Art. 3º</span> De las lenguas oficiales</li>
@@ -348,62 +334,6 @@
 
 </div>
 <script>
-
-function leerArticulos() {
-  if (!('speechSynthesis' in window)) {
-    alert('Tu navegador no soporta la lectura de texto.');
-    return;
-  }
-  window.speechSynthesis.cancel();
-  const texto = `Artículos importantes de la Ley 4251 barra 11.
-    Artículo 3: De las lenguas oficiales.
-    Artículo 5: De la promoción de las lenguas originarias.
-    Artículo 7: De la no discriminación por razones lingüísticas.
-    Artículo 8: Del valor jurídico de las expresiones.
-    Artículo 9: De los derechos lingüísticos individuales.
-    Artículo 10: Derechos lingüísticos colectivos nacionales.
-    Artículo 12: De la responsabilidad del Estado hacia los pueblos indígenas.
-    Artículo 14: De las leyes y demás disposiciones normativas.
-    Artículo 15: Del uso en el ámbito judicial.
-    Artículo 17: Del conocimiento de las dos lenguas oficiales para ocupar cargos públicos.
-    Artículo 18: De los documentos de identidad.
-    Artículo 21: Del respeto a la toponimia.
-    Artículo 26: De la alfabetización en lengua materna.
-    Artículo 28: De la enseñanza de las lenguas oficiales.
-    Artículo 29: De las lenguas oficiales como instrumentos didácticos.`;
-
-  const utt = new SpeechSynthesisUtterance(texto);
-  utt.lang = 'es-ES';
-  utt.rate = 0.88;
-  utt.pitch = 1;
-
-  const voices = window.speechSynthesis.getVoices();
-  const esVoice = voices.find(v => v.lang.startsWith('es'));
-  if (esVoice) utt.voice = esVoice;
-
-  document.getElementById('btn-leer').style.display = 'none';
-  document.getElementById('btn-detener').style.display = 'flex';
-
-  utt.onend = () => {
-    document.getElementById('btn-leer').style.display = 'flex';
-    document.getElementById('btn-detener').style.display = 'none';
-  };
-  utt.onerror = () => {
-    document.getElementById('btn-leer').style.display = 'flex';
-    document.getElementById('btn-detener').style.display = 'none';
-  };
-  window.speechSynthesis.speak(utt);
-}
-
-function detenerLectura() {
-  window.speechSynthesis.cancel();
-  document.getElementById('btn-leer').style.display = 'flex';
-  document.getElementById('btn-detener').style.display = 'none';
-}
-
-// Preload voices
-window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-
 function toggleAcc(header) {
   const body = header.nextElementSibling;
   header.classList.toggle('open');
