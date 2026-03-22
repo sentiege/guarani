@@ -126,7 +126,7 @@
     font-weight:bold; width:20px; height:20px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
   }
-  .card .icon { font-size:38px; margin-bottom:10px; }
+  .card .icon { font-size:38px; margin-bottom:10px; display:flex; justify-content:center; align-items:center; }
   .card h2 { font-size:13px; color:#1a2a4a; margin-bottom:6px; line-height:1.4; flex:1; }
   .card-meta {
     display:flex; gap:5px; flex-wrap:wrap; justify-content:center; margin-top:10px;
@@ -143,6 +143,70 @@
   .tag-time   { background:#fafafa; color:#888; border:1px solid #e0e0e0; }
 
   /* FOOTER */
+  /* FEATURED SIMULACRO CARD */
+  .simulacro-wrap {
+    margin-top: 16px;
+  }
+  .simulacro-card {
+    display: flex; align-items: center; gap: 20px;
+    background: linear-gradient(135deg, #1a0a0a 0%, #2c0f0f 50%, #1a1a0a 100%);
+    border: 2px solid #c0392b;
+    border-radius: 14px; padding: 20px 24px;
+    text-decoration: none; color: inherit;
+    box-shadow: 0 0 18px rgba(192,57,43,0.35), 0 6px 20px rgba(0,0,0,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .simulacro-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      transparent, transparent 18px, rgba(255,255,255,0.02) 18px, rgba(255,255,255,0.02) 19px
+    );
+    pointer-events: none;
+  }
+  .simulacro-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 28px rgba(192,57,43,0.55), 0 12px 32px rgba(0,0,0,0.5);
+  }
+  .sim-icon {
+    font-size: 44px; flex-shrink: 0;
+    filter: drop-shadow(0 0 6px rgba(192,57,43,0.8));
+  }
+  .sim-body { flex: 1; }
+  .sim-badge {
+    display: inline-block;
+    background: #c0392b; color: white;
+    font-size: 10px; font-weight: bold;
+    padding: 3px 10px; border-radius: 10px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 6px;
+    animation: badge-pulse 1.8s ease infinite;
+  }
+  @keyframes badge-pulse {
+    0%,100%{ box-shadow: 0 0 0 0 rgba(192,57,43,0.6); }
+    50%{ box-shadow: 0 0 0 6px rgba(192,57,43,0); }
+  }
+  .sim-title {
+    font-size: 16px; font-weight: bold; color: white;
+    margin-bottom: 4px; letter-spacing: 0.5px;
+  }
+  .sim-desc { font-size: 12px; color: #e0b0a0; line-height: 1.5; }
+  .sim-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; justify-content: center; }
+  .sim-tag {
+    font-size: 10px; font-weight: bold; padding: 3px 10px;
+    border-radius: 12px; border: 1px solid;
+  }
+  .sim-arrow {
+    font-size: 28px; color: #c0392b; flex-shrink: 0;
+    filter: drop-shadow(0 0 4px rgba(192,57,43,0.6));
+  }
+  @media (max-width:520px) {
+    .simulacro-card { flex-direction: column; text-align: center; }
+    .sim-tags { justify-content: center; }
+    .sim-arrow { display: none; }
+  }
+
   .footer {
     color:#4a6a8a; font-size:11px; margin-top:28px;
     line-height:1.6; padding:0 10px;
@@ -350,6 +414,27 @@
       </div>
     </a>
 
+  </div>
+
+  <!-- ── SIMULACRO ── -->
+  <div class="simulacro-wrap">
+    <a class="simulacro-card" href="simulacro_guarani.html">
+      <div class="sim-icon">&#128220;</div>
+      <div class="sim-body">
+        <span class="sim-badge">&#9888; Simulacro de Examen</span>
+        <div class="sim-title">Examen Parcial de Guaraní I — Lunes 23</div>
+        <div class="sim-desc">
+          Respondé las 20 preguntas del simulacro oficial con efecto de escritura a lápiz.
+          Si aprobás todo, ¡desbloqueás la <strong style="color:#ff9999">Versión Difícil</strong>!
+        </div>
+        <div class="sim-tags">
+          <span class="sim-tag" style="background:rgba(192,57,43,0.2);color:#ff9999;border-color:#c0392b;">20 preguntas</span>
+          <span class="sim-tag" style="background:rgba(41,128,185,0.2);color:#aad4f5;border-color:#2980b9;">Versión Difícil desbloqueble</span>
+          <span class="sim-tag" style="background:rgba(39,174,96,0.15);color:#a9dfbf;border-color:#27ae60;">⏱ 15 min</span>
+        </div>
+      </div>
+      <div class="sim-arrow">&#8250;</div>
+    </a>
   </div>
 
   <p class="footer">
