@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen Parcial — Guaraní I</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    background: #c9d6df;
+    background-image: linear-gradient(135deg,#c9d6df 0%,#e2ebf0 100%);
+    min-height:100vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:flex-start; padding:24px 16px;
+    font-family: 'Merriweather', Georgia, serif;
+  }
+
+  /* PAPER */
+  .paper {
+    background: #fdf9ef;
+    width:100%; max-width:720px;
+    border-radius:3px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15), 0 12px 32px rgba(0,0,0,0.12), inset 0 0 60px rgba(200,180,100,0.06);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  /* Lined paper effect */
+  .paper::before {
+    content:'';
+    position:absolute; inset:0;
+    background: repeating-linear-gradient(
+      transparent, transparent 27px, #d6e4f0 27px, #d6e4f0 28px
+    );
+    pointer-events:none; z-index:0;
+    top: 200px;
+  }
+  /* Red margin line */
+  .paper::after {
+    content:'';
+    position:absolute; top:180px; bottom:0; left:72px;
+    width:1.5px; background:#e8a0a0; z-index:0; pointer-events:none;
+  }
+
+  /* HEADER */
+  .exam-header {
+    background: #fff;
+    border-bottom: 3px double #2c3e6a;
+    padding: 20px 28px 16px;
+    position: relative; z-index:1;
+    display: flex; align-items: center; gap: 18px;
+  }
+  .una-logo { width:72px; height:72px; object-fit:contain; flex-shrink:0; }
+  .header-text { flex:1; text-align:center; }
+  .header-inst {
+    font-size:10px; color:#555; text-transform:uppercase;
+    letter-spacing:1.5px; margin-bottom:5px;
+  }
+  .header-title {
+    font-size:15px; font-weight:700; color:#1a2a4a;
+    text-transform:uppercase; letter-spacing:1px; margin-bottom:3px;
+  }
+  .header-date { font-size:12px; color:#444; font-style:italic; }
+  .header-version {
+    background:#1a2a4a; color:white; font-size:10px;
+    padding:3px 10px; border-radius:10px; margin-top:5px;
+    display:inline-block;
+  }
+
+  /* ALUMNO */
+  .alumno-row {
+    padding: 14px 28px 10px 82px;
+    position:relative; z-index:1;
+    border-bottom: 1px solid #e0d8c0;
+    display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+  }
+  .alumno-label { font-size:12px; font-weight:700; color:#2c3e6a; white-space:nowrap; }
+  .alumno-input {
+    flex:1; min-width:180px; border:none; border-bottom:1.5px solid #333;
+    background:transparent; font-family:'Caveat',cursive; font-size:18px;
+    color:#1a1a4a; outline:none; padding:2px 4px; line-height:1.3;
+  }
+  .alumno-input::placeholder { color:#bbb; font-size:15px; }
+  .fecha-label { font-size:12px; font-weight:700; color:#2c3e6a; white-space:nowrap; }
+
+  /* INSTRUCCIONES */
+  .instrucciones {
+    padding: 10px 28px 8px 82px;
+    font-size:11px; color:#666; font-style:italic;
+    border-bottom: 1px dashed #d0c8b0;
+    position:relative; z-index:1;
+  }
+
+  /* PREGUNTAS */
+  .questions { padding: 10px 28px 20px 82px; position:relative; z-index:1; }
+
+  .q-block { margin-bottom:22px; }
+  .q-num-text {
+    font-size:12.5px; font-weight:700; color:#1a2a4a;
+    margin-bottom:8px; line-height:1.5;
+  }
+  .q-num { color:#c0392b; font-weight:700; margin-right:5px; }
+  .q-guarani {
+    font-size:10.5px; color:#7a6a9a; font-style:italic;
+    margin-bottom:8px; padding-left:16px;
+    line-height:1.5;
+  }
+
+  /* OPTIONS */
+  .options { display:flex; flex-direction:column; gap:5px; padding-left:12px; }
+  .opt {
+    display:flex; align-items:flex-start; gap:10px;
+    cursor:pointer; padding:3px 4px; border-radius:3px;
+    transition:background 0.1s;
+  }
+  .opt:hover .opt-bubble { border-color:#2980b9; }
+  .opt-bubble {
+    position:relative; width:22px; height:22px; flex-shrink:0;
+    margin-top:1px;
+  }
+  /* SVG circle ring */
+  .opt-bubble svg {
+    position:absolute; top:-4px; left:-4px;
+    width:30px; height:30px; display:none;
+  }
+  .opt-bubble svg circle {
+    fill:none; stroke:#1a1a6a; stroke-width:1.8;
+    stroke-dasharray:95; stroke-dashoffset:95;
+    stroke-linecap:round;
+  }
+  /* letter */
+  .opt-letter {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Merriweather',serif; font-size:12px; font-weight:700;
+    color:#333;
+  }
+  .opt-text {
+    font-size:12px; color:#2c2c2c; line-height:1.6;
+    padding-top:2px;
+  }
+  /* selected state */
+  .opt.selected .opt-bubble svg { display:block; }
+  .opt.selected .opt-bubble svg circle {
+    animation: draw-ring 0.45s ease forwards;
+  }
+  .opt.selected .opt-letter {
+    font-family:'Caveat',cursive; font-size:15px; color:#1a1a6a; font-weight:700;
+  }
+  .opt.selected .opt-text {
+    font-family:'Caveat',cursive; font-size:14px; color:#1a1a6a;
+    font-weight:600; transform:rotate(-0.4deg);
+  }
+  /* correct/wrong after submit */
+  .opt.correct .opt-bubble svg { display:block; }
+  .opt.correct .opt-bubble svg circle { stroke:#27ae60; stroke-dashoffset:0; }
+  .opt.correct .opt-letter { color:#27ae60; }
+  .opt.correct .opt-text { color:#27ae60; }
+  .opt.wrong .opt-bubble svg { display:block; }
+  .opt.wrong .opt-bubble svg circle { stroke:#e74c3c; stroke-dashoffset:0; }
+  .opt.wrong .opt-letter { color:#e74c3c; text-decoration:line-through; }
+  .opt.wrong .opt-text { color:#e74c3c; }
+  .opt.missed .opt-text::after { content:' ← correcta'; color:#27ae60; font-size:10px; font-style:italic; }
+
+  @keyframes draw-ring {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* DIVIDER */
+  .q-divider { border:none; border-top:1px dashed #d0c8b0; margin:6px 0; }
+
+  /* SUBMIT */
+  .submit-row {
+    padding: 16px 28px 24px 82px;
+    position:relative; z-index:1;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  .btn-entregar {
+    padding:11px 28px; background:#1a2a4a; color:white;
+    border:none; border-radius:4px; font-size:14px; font-weight:700;
+    cursor:pointer; font-family:'Merriweather',serif;
+    box-shadow:0 3px 8px rgba(0,0,0,0.2); transition:all 0.2s;
+  }
+  .btn-entregar:hover { background:#2c3e6a; transform:translateY(-1px); }
+  .btn-entregar:disabled { background:#999; cursor:default; transform:none; }
+  .entregar-hint { font-size:11px; color:#999; font-style:italic; }
+
+  /* RESULT */
+  .result-box {
+    margin: 0 28px 20px 82px;
+    padding:16px 20px; border-radius:6px;
+    position:relative; z-index:1;
+    display:none;
+  }
+  .result-box.aprobado { background:#d5f5e3; border:2px solid #27ae60; }
+  .result-box.reprobado { background:#fadbd8; border:2px solid #e74c3c; }
+  .result-title { font-size:15px; font-weight:700; margin-bottom:6px; }
+  .result-score { font-size:13px; margin-bottom:10px; }
+  .btn-dificil {
+    padding:10px 22px; background:#c0392b; color:white;
+    border:none; border-radius:4px; font-size:13px; font-weight:700;
+    cursor:pointer; font-family:'Merriweather',serif;
+    animation:pulse-btn 1.2s ease infinite;
+  }
+  @keyframes pulse-btn {
+    0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,0.5)}
+    50%{box-shadow:0 0 0 8px rgba(192,57,43,0)}
+  }
+
+  /* PENCIL CURSOR hint */
+  .paper { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z' fill='%23333'/%3E%3C/svg%3E") 0 24, auto; }
+
+  a.back-btn {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:7px 13px; background:#1a2a4a; color:white;
+    border-radius:8px; font-size:12px; text-decoration:none;
+    margin-bottom:14px; font-family:Arial,sans-serif;
+  }
+  a.back-btn:hover { background:#2c3e6a; }
+</style>
+</head>
+<body>
+<a class="back-btn" href="index.html">&#8592; Volver al inicio</a>
+
+<div class="paper" id="paper-1">
+  <!-- HEADER -->
+  <div class="exam-header">
+    <img class="una-logo"
+         src="https://upload.wikimedia.org/wikipedia/commons/6/60/Univ-Nacional-Asuncion-Logo.jpg"
+         alt="Logo UNA" onerror="this.style.display='none'">
+    <div class="header-text">
+      <div class="header-inst">Universidad Nacional de Asunción — Escuela de Ciencias Sociales y Políticas</div>
+      <div class="header-title">Examen Parcial de Guaraní I</div>
+      <div class="header-date">Lunes 23 de Marzo &nbsp;·&nbsp; Guaraní I &nbsp;·&nbsp; Ley de Lenguas 4251/11</div>
+      <span class="header-version">Versión A — 20 preguntas</span>
+    </div>
+  </div>
+
+  <!-- ALUMNO -->
+  <div class="alumno-row">
+    <span class="alumno-label">Nombre y Apellido:</span>
+    <input class="alumno-input" type="text" id="alumno-name" placeholder="Escribí tu nombre aquí..." autocomplete="off">
+    <span class="fecha-label">Fecha: ___/___/2026</span>
+  </div>
+
+  <!-- INSTRUCCIONES -->
+  <div class="instrucciones">
+    &#9998; Instrucción: Seleccioná la opción correcta en cada pregunta. Solo una respuesta es correcta.
+    Leé detenidamente antes de responder.
+  </div>
+
+  <!-- PREGUNTAS -->
+  <div class="questions" id="questions-1"></div>
+
+  <!-- SUBMIT -->
+  <div class="submit-row">
+    <button class="btn-entregar" id="btn-e1" onclick="entregar(1)">&#9998; Entregar Examen</button>
+    <span class="entregar-hint">Asegurate de responder todas las preguntas antes de entregar.</span>
+  </div>
+  <div class="result-box" id="result-1"></div>
+</div>
+
+<!-- EXAM 2 (hidden) -->
+<div class="paper" id="paper-2" style="display:none;margin-top:24px;">
+  <div class="exam-header">
+    <img class="una-logo"
+         src="https://upload.wikimedia.org/wikipedia/commons/6/60/Univ-Nacional-Asuncion-Logo.jpg"
+         alt="Logo UNA" onerror="this.style.display='none'">
+    <div class="header-text">
+      <div class="header-inst">Universidad Nacional de Asunción — Escuela de Ciencias Sociales y Políticas</div>
+      <div class="header-title">Examen Parcial de Guaraní I</div>
+      <div class="header-date">Lunes 23 de Marzo &nbsp;·&nbsp; Guaraní I &nbsp;·&nbsp; Versión Difícil</div>
+      <span class="header-version" style="background:#c0392b;">Versión B — DIFÍCIL — 10 preguntas</span>
+    </div>
+  </div>
+  <div class="alumno-row">
+    <span class="alumno-label">Alumno/a:</span>
+    <span id="nombre-v2" style="font-family:'Caveat',cursive;font-size:19px;color:#1a1a6a;padding:2px 6px;"></span>
+  </div>
+  <div class="instrucciones">
+    &#9888; Versión difícil: las preguntas requieren comprensión profunda de la Ley 4251/11. ¡Mucha suerte!
+  </div>
+  <div class="questions" id="questions-2"></div>
+  <div class="submit-row">
+    <button class="btn-entregar" id="btn-e2" onclick="entregar(2)">&#9998; Entregar Versión Difícil</button>
+  </div>
+  <div class="result-box" id="result-2"></div>
+</div>
+
+<script>
+const EXAM1 = [
+  { q:"SEGÚN EL ART. 3, EL ESTADO DEBE DAR ESPECIAL ATENCIÓN AL GUARANÍ PORQUE...",
+    g:"Moĩháicha he'i Art. 3, Estado oikuaa porã haguã guaraní rehe...",
+    opts:[{v:'a',t:"Es el idioma oficial más utilizado en el ámbito judicial."},
+          {v:'b',t:"Es signo de identidad cultural, cohesión nacional y lengua mayoritaria."},
+          {v:'c',t:"Es la lengua usada únicamente por las comunidades rurales."},
+          {v:'d',t:"Es una lengua de origen indígena sin vigencia actual."}], ans:'b'},
+  { q:"EL ART. 5 ESTABLECE QUE EL ESTADO DEBE PROMOVER PRINCIPALMENTE...",
+    g:"Art. 5 he'i Estado oipysyrõ ha'éva mba'e rehe...",
+    opts:[{v:'a',t:"Solo el guaraní y el castellano."},
+          {v:'b',t:"El uso exclusivo del guaraní en documentos oficiales."},
+          {v:'c',t:"La preservación y uso de las lenguas originarias de América."},
+          {v:'d',t:"La enseñanza del castellano como lengua internacional."}], ans:'c'},
+  { q:"SEGÚN EL ART. 7, LA DISCRIMINACIÓN LINGÜÍSTICA...",
+    g:"Art. 7 he'iháicha, diskriminación lingüística...",
+    opts:[{v:'a',t:"Solo puede ser denunciada en instituciones educativas."},
+          {v:'b',t:"No es considerada una violación de derechos."},
+          {v:'c',t:"Debe ser tratada en tribunales competentes del fuero correspondiente."},
+          {v:'d',t:"Solo protege a comunidades indígenas."}], ans:'c'},
+  { q:"EL ART. 8 INDICA QUE UN DOCUMENTO REDACTADO EN GUARANÍ...",
+    g:"Art. 8 he'i documento guaraníme ojehecha...",
+    opts:[{v:'a',t:"No tiene validez jurídica."},
+          {v:'b',t:"Solo es válido si tiene traducción certificada."},
+          {v:'c',t:"Tiene igual valor jurídico que uno en castellano."},
+          {v:'d',t:"Solo se utiliza para trámites municipales."}], ans:'c'},
+  { q:"EL DERECHO DEL ART. 9 QUE GARANTIZA EL USO DE LENGUA OFICIAL ANTE LA JUSTICIA ES...",
+    g:"Art. 9 derecho he'i mba'épa peteĩva ikatu oñeporúva ñane'ẽ ofisiál justicia-pe...",
+    opts:[{v:'a',t:"Derecho a la educación bilingüe."},
+          {v:'b',t:"Derecho a no ser discriminado."},
+          {v:'c',t:"Derecho a asistencia lingüística en juicio."},
+          {v:'d',t:"Derecho a recibir información en guaraní."}], ans:'c'},
+  { q:"SEGÚN EL ART. 10, UN DERECHO LINGÜÍSTICO COLECTIVO ES...",
+    g:"Art. 10-pe, derecho lingüístico colectivo oikóta...",
+    opts:[{v:'a',t:"Que cada ciudadano decida si aprenderá o no guaraní."},
+          {v:'b',t:"Tener la educación nacional bilingüe guaraní-castellano."},
+          {v:'c',t:"Utilizar el guaraní solo en actos culturales."},
+          {v:'d',t:"Hablar guaraní únicamente en el hogar."}], ans:'b'},
+  { q:"EL ART. 12 ESTABLECE QUE EL ESTADO DEBE...",
+    g:"Art. 12 he'i Estado oikóta mba'épa...",
+    opts:[{v:'a',t:"Promover solo el castellano en territorios indígenas."},
+          {v:'b',t:"Garantizar la supervivencia de lenguas y culturas indígenas."},
+          {v:'c',t:"Reemplazar las lenguas indígenas por el guaraní."},
+          {v:'d',t:"Obligar a las comunidades a alfabetizarse en castellano."}], ans:'b'},
+  { q:"SEGÚN EL ART. 15, LAS RESOLUCIONES DIRIGIDAS A PERSONAS QUE SOLO HABLAN GUARANÍ DEBEN SER...",
+    g:"Art. 15 he'i resolución ojejapóva guaraní rehe oñe'ẽva'erã...",
+    opts:[{v:'a',t:"Únicamente en castellano."},
+          {v:'b',t:"Emitidas en la lengua que el juez considere conveniente."},
+          {v:'c',t:"Dictadas en ambas lenguas oficiales."},
+          {v:'d',t:"Dictadas primero en castellano y luego traducidas informalmente."}], ans:'c'},
+  { q:"EL ART. 17 ESTABLECE PREFERENCIA PARA CARGOS PÚBLICOS A QUIENES...",
+    g:"Art. 17 he'i mba'épa preferencia ombokatupyrýva cargo público-pe...",
+    opts:[{v:'a',t:"Hablan solo guaraní."},
+          {v:'b',t:"Hablan ambas lenguas oficiales con mayor competencia."},
+          {v:'c',t:"Tengan títulos universitarios únicamente."},
+          {v:'d',t:"Sean de origen indígena."}], ans:'b'},
+  { q:"SEGÚN EL ART. 21, LOS NOMBRES DE LUGARES (TOPÓNIMOS)...",
+    g:"Art. 21 he'i topónimo-kuéra...",
+    opts:[{v:'a',t:"Deben ser traducidos al castellano."},
+          {v:'b',t:"Deben mantenerse en guaraní o lengua indígena correspondiente."},
+          {v:'c',t:"Pueden cambiarse según decisión administrativa."},
+          {v:'d',t:"Solo pueden escribirse en castellano."}], ans:'b'},
+  { q:"ART. 9: LOS HABITANTES TIENEN DERECHO A RECIBIR EDUCACIÓN EN SU LENGUA MATERNA. ESTO SIGNIFICA...",
+    g:"Art. 9: Yvypóra kuéra ikatu oñemoañete iñe'ẽ teépe.",
+    opts:[{v:'a',t:"Solo en castellano."},
+          {v:'b',t:"Solo en guaraní."},
+          {v:'c',t:"En su lengua materna, oficial o indígena."},
+          {v:'d',t:"En cualquier lengua extranjera."}], ans:'c'},
+  { q:"ART. 10: LOS SERVICIOS DEL ESTADO DEBEN BRINDARSE...",
+    g:"Art. 10: Estado servicio-kuéra oikóta...",
+    opts:[{v:'a',t:"Solo en castellano."},
+          {v:'b',t:"Solo en guaraní."},
+          {v:'c',t:"En ambas lenguas oficiales."},
+          {v:'d',t:"Solo en idiomas extranjeros."}], ans:'c'},
+  { q:"ART. 14: LAS LEYES DEBEN SER PUBLICADAS...",
+    g:"Art. 14: Ley-kuéra oikóta...",
+    opts:[{v:'a',t:"Promulgadas solo en castellano, sin traducción."},
+          {v:'b',t:"En castellano, con textos en ambas lenguas oficiales."},
+          {v:'c',t:"Solo en guaraní."},
+          {v:'d',t:"Solo en idiomas internacionales."}], ans:'b'},
+  { q:"ART. 15: LOS OPERADORES Y AUXILIARES DE JUSTICIA DEBEN TENER...",
+    g:"Art. 15: Operador ha auxiliar de justicia oikóta...",
+    opts:[{v:'a',t:"Competencia en castellano solamente."},
+          {v:'b',t:"Competencia en ambas lenguas oficiales."},
+          {v:'c',t:"Competencia solo en guaraní."},
+          {v:'d',t:"Competencia en idioma extranjero."}], ans:'b'},
+  { q:"ART. 17: PARA OCUPAR CARGOS PÚBLICOS SE PREFIERE A...",
+    g:"Art. 17: Cargo público ra oje preferi...",
+    opts:[{v:'a',t:"Personas que solo hablan castellano."},
+          {v:'b',t:"Personas con mayor competencia en ambas lenguas oficiales."},
+          {v:'c',t:"Personas con títulos universitarios únicamente."},
+          {v:'d',t:"Personas de origen indígena."}], ans:'b'},
+  { q:"ART. 18: LOS DOCUMENTOS DE IDENTIDAD DEBEN CONTENER...",
+    g:"Art. 18: Documento-kuéra oikóta...",
+    opts:[{v:'a',t:"Datos solo en castellano."},
+          {v:'b',t:"Datos solo en guaraní."},
+          {v:'c',t:"Datos en ambas lenguas oficiales."},
+          {v:'d',t:"Datos en idioma extranjero."}], ans:'c'},
+  { q:"ART. 21: LOS TOPÓNIMOS (NOMBRES DE LUGARES) DEBEN...",
+    g:"Art. 21: Topónimo-kuéra oikóta...",
+    opts:[{v:'a',t:"Traducirse al castellano."},
+          {v:'b',t:"Mantenerse en guaraní o lengua indígena."},
+          {v:'c',t:"Cambiarse según criterio administrativo."},
+          {v:'d',t:"Escribirse solo en castellano."}], ans:'b'},
+  { q:"ART. 26: LOS NIÑOS TIENEN DERECHO A EDUCACIÓN INICIAL EN...",
+    g:"Art. 26: Mitã-kuéra ikatu oñemoañete educación inicial-pe...",
+    opts:[{v:'a',t:"Castellano solamente."},
+          {v:'b',t:"Su lengua materna oficial o indígena."},
+          {v:'c',t:"Guaraní solamente."},
+          {v:'d',t:"Cualquier lengua extranjera."}], ans:'b'},
+  { q:"ART. 28: LAS LENGUAS OFICIALES DEBEN ENSEÑARSE...",
+    g:"Art. 28: Ñe'ẽtee oiporu oñemoañete...",
+    opts:[{v:'a',t:"En instituciones públicas y privadas con métodos eficaces."},
+          {v:'b',t:"Solo en escuelas privadas."},
+          {v:'c',t:"Solo en escuelas públicas."},
+          {v:'d',t:"Solo en educación superior."}], ans:'a'},
+  { q:"ART. 29: LAS LENGUAS OFICIALES SE USAN COMO MEDIO DE ENSEÑANZA EN...",
+    g:"Art. 29: Ñe'ẽtee oñeporúva enseñanza-pe...",
+    opts:[{v:'a',t:"Todos los niveles del sistema educativo."},
+          {v:'b',t:"Solo en nivel inicial."},
+          {v:'c',t:"Solo en nivel medio."},
+          {v:'d',t:"Solo en nivel superior."}], ans:'a'},
+];
+
+const EXAM2 = [
+  { q:"¿Cuál de estas opciones NO constituye un derecho lingüístico individual según la Ley 4251?",
+    opts:[{v:'a',t:"Usar su lengua materna en juicio."},
+          {v:'b',t:"Recibir educación en lengua materna."},
+          {v:'c',t:"Imponer su lengua a otros ciudadanos."},
+          {v:'d',t:"Acceder a servicios públicos en su lengua."}], ans:'c'},
+  { q:"La diferencia clave entre el Art. 9 y el Art. 10 de la Ley 4251 es que...",
+    opts:[{v:'a',t:"El Art. 9 refiere a derechos individuales y el Art. 10 a derechos colectivos."},
+          {v:'b',t:"El Art. 9 habla de guaraní y el Art. 10 de castellano exclusivamente."},
+          {v:'c',t:"El Art. 9 es sobre educación y el Art. 10 es sobre el ámbito judicial."},
+          {v:'d',t:"No existe diferencia significativa entre ambos artículos."}], ans:'a'},
+  { q:"El Art. 7 establece que la discriminación lingüística debe ser tratada por tribunales competentes. ¿Qué principio constitucional refuerza este artículo?",
+    opts:[{v:'a',t:"Autonomía universitaria y libertad de cátedra."},
+          {v:'b',t:"Igualdad ante la ley y no discriminación."},
+          {v:'c',t:"Libre expresión económica y comercial."},
+          {v:'d',t:"Separación de poderes del Estado."}], ans:'b'},
+  { q:"La preferencia en cargos públicos para hablantes de ambas lenguas (Art. 17) implica que...",
+    opts:[{v:'a',t:"Solo personas bilingües pueden acceder a cargos públicos."},
+          {v:'b',t:"Los ciudadanos monolingües quedan excluidos de todo cargo público."},
+          {v:'c',t:"Se da preferencia, pero no exclusividad, a quienes dominen ambas lenguas."},
+          {v:'d',t:"El guaraní es requisito obligatorio solo para cargos en zonas rurales."}], ans:'c'},
+  { q:"Si un documento oficial está redactado en guaraní y es cuestionado jurídicamente, según el Art. 8...",
+    opts:[{v:'a',t:"Debe ser reescrito en castellano para tener validez."},
+          {v:'b',t:"Tiene plena validez jurídica equivalente a uno en castellano."},
+          {v:'c',t:"Requiere la firma de un intérprete certificado para ser válido."},
+          {v:'d',t:"Solo es válido en el ámbito municipal, no judicial."}], ans:'b'},
+  { q:"Según el espíritu del Art. 21, los topónimos guaraníes que fueron castellanizados históricamente deberían...",
+    opts:[{v:'a',t:"Permanecer en castellano por razones prácticas."},
+          {v:'b',t:"Recuperarse progresivamente a su denominación original."},
+          {v:'c',t:"Decidirse por voto popular en cada municipio afectado."},
+          {v:'d',t:"Mantenerse tal cual hasta nueva disposición del Congreso."}], ans:'b'},
+  { q:"Un niño cuya lengua materna es el nivacle (lengua indígena), según el Art. 26, tiene derecho a recibir educación inicial en...",
+    opts:[{v:'a',t:"Castellano, por ser la lengua oficial dominante."},
+          {v:'b',t:"Guaraní, por ser la lengua indígena mayoritaria."},
+          {v:'c',t:"Su lengua materna: el nivacle."},
+          {v:'d',t:"La lengua que elija la institución educativa."}], ans:'c'},
+  { q:"El Art. 15 menciona la obligación de los 'operadores de justicia'. ¿Cuál es la interpretación más precisa de esta obligación?",
+    opts:[{v:'a',t:"Deben contratar intérpretes para todos los juicios sin excepción."},
+          {v:'b',t:"Solo necesitan competencia lingüística si la parte lo solicita."},
+          {v:'c',t:"Deben tener competencia comunicativa en ambas lenguas oficiales para ejercer."},
+          {v:'d',t:"Solo aplica a jueces, no a fiscales ni defensores."}], ans:'c'},
+  { q:"¿Cuál de los siguientes artículos garantiza que los servicios estatales (salud, transporte, etc.) atiendan en ambas lenguas oficiales?",
+    opts:[{v:'a',t:"Art. 7 — no discriminación lingüística."},
+          {v:'b',t:"Art. 9 — derechos lingüísticos individuales."},
+          {v:'c',t:"Art. 10 — derechos lingüísticos colectivos."},
+          {v:'d',t:"Art. 14 — publicación de leyes."}], ans:'c'},
+  { q:"Según el Art. 29, enseñar en ambas lenguas oficiales en todos los niveles educativos tiene como propósito principal...",
+    opts:[{v:'a',t:"Sustituir gradualmente el guaraní por el castellano en la academia."},
+          {v:'b',t:"Usar las lenguas oficiales como instrumento didáctico para un aprendizaje pleno."},
+          {v:'c',t:"Garantizar que los docentes sean bilingües en todos los niveles."},
+          {v:'d',t:"Promover únicamente la enseñanza del guaraní como lengua de instrucción."}], ans:'b'},
+];
+
+const answers = { 1:{}, 2:{} };
+
+function buildExam(examNum, data) {
+  const container = document.getElementById('questions-' + examNum);
+  let html = '';
+  data.forEach((item, i) => {
+    const qid = `e${examNum}q${i}`;
+    const guaraniLine = item.g ? `<div class="q-guarani">&#127757; ${item.g}</div>` : '';
+    const optsHtml = item.opts.map(o => `
+      <div class="opt" id="${qid}_${o.v}" onclick="selectOpt(${examNum},${i},'${o.v}')">
+        <div class="opt-bubble">
+          <svg viewBox="0 0 30 30"><circle cx="15" cy="15" r="13"/></svg>
+          <span class="opt-letter">${o.v}</span>
+        </div>
+        <span class="opt-text">${o.t}</span>
+      </div>`).join('');
+    html += `
+      <div class="q-block">
+        <div class="q-num-text"><span class="q-num">${i+1}.</span>${item.q}</div>
+        ${guaraniLine}
+        <div class="options" id="${qid}">${optsHtml}</div>
+      </div>
+      ${i < data.length-1 ? '<hr class="q-divider">' : ''}`;
+  });
+  container.innerHTML = html;
+}
+
+function selectOpt(examNum, qIdx, val) {
+  const exam = examNum===1 ? EXAM1 : EXAM2;
+  const qid = `e${examNum}q${qIdx}`;
+  // Clear previous
+  exam[qIdx].opts.forEach(o => {
+    const el = document.getElementById(`${qid}_${o.v}`);
+    if (el) el.classList.remove('selected');
+  });
+  // Select
+  const sel = document.getElementById(`${qid}_${val}`);
+  if (sel) {
+    sel.classList.add('selected');
+    // Re-trigger animation
+    const circ = sel.querySelector('circle');
+    if (circ) { circ.style.animation='none'; circ.offsetHeight; circ.style.animation=''; }
+  }
+  answers[examNum][qIdx] = val;
+}
+
+function entregar(examNum) {
+  const exam = examNum===1 ? EXAM1 : EXAM2;
+  let correct=0, total=exam.length;
+
+  exam.forEach((item, i) => {
+    const qid = `e${examNum}q${i}`;
+    const given = answers[examNum][i];
+    item.opts.forEach(o => {
+      const el = document.getElementById(`${qid}_${o.v}`);
+      if (!el) return;
+      el.onclick = null; el.style.cursor='default';
+      if (o.v === item.ans) {
+        if (given === item.ans) { el.classList.add('correct'); correct++; }
+        else { el.classList.add('missed'); }
+      } else if (o.v === given) {
+        el.classList.add('wrong');
+      }
+    });
+  });
+
+  document.getElementById('btn-e'+examNum).disabled = true;
+  const resultBox = document.getElementById('result-'+examNum);
+  resultBox.style.display = 'block';
+
+  if (examNum===1 && correct===total) {
+    resultBox.className='result-box aprobado';
+    resultBox.innerHTML = `
+      <div class="result-title">&#127942; ¡PERFECTO! ${correct}/${total} — ¡Todas correctas!</div>
+      <div class="result-score">Dominás a la perfección los artículos de la Ley 4251/11.</div>
+      <div style="margin-top:10px;">
+        <strong>¿Querés probar la versión difícil?</strong><br>
+        <small style="color:#555">10 preguntas de comprensión profunda — sin traducción al guaraní.</small><br><br>
+        <button class="btn-dificil" onclick="activarDificil()">&#9888; Sí, quiero la Versión Difícil</button>
+      </div>`;
+  } else if (examNum===1) {
+    resultBox.className='result-box reprobado';
+    resultBox.innerHTML = `
+      <div class="result-title">&#128196; Resultado: ${correct}/${total}</div>
+      <div class="result-score">Revisá las respuestas marcadas en rojo y volvé a estudiar los artículos incorrectos.<br>
+      <small>Las respuestas correctas aparecen en verde con "← correcta".</small></div>`;
+  } else {
+    const cls = correct>=8 ? 'aprobado' : 'reprobado';
+    resultBox.className='result-box '+cls;
+    resultBox.innerHTML = `
+      <div class="result-title">${correct>=8?'&#127942; ¡Excelente!':'&#128196; Resultado'}: ${correct}/${total}</div>
+      <div class="result-score">${correct>=8
+        ? '¡Dominás la Ley 4251/11 con profundidad! Estás listo/a para el examen real.'
+        : 'Repasá los artículos señalados en rojo. ¡Ya casi llegás!'}</div>`;
+  }
+
+  resultBox.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function activarDificil() {
+  const nombre = document.getElementById('alumno-name').value;
+  document.getElementById('nombre-v2').textContent = nombre || '(sin nombre)';
+  const p2 = document.getElementById('paper-2');
+  p2.style.display='block';
+  buildExam(2, EXAM2);
+  p2.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+// Build exam 1 on load
+buildExam(1, EXAM1);
+</script>
+</body>
+</html>
