@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcial de Guaraní - Guía de Estudio</title>
+<style>
+  :root{
+    --azul:#1b3a6b;
+    --azul-claro:#2e5aa8;
+    --dorado:#c99a2e;
+    --fondo:#f7f5ef;
+    --gris:#4a4a4a;
+    --verde:#2f8f4e;
+    --rojo:#c0392b;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:var(--fondo);
+    margin:0;
+    color:#222;
+    line-height:1.55;
+  }
+  header{
+    background:linear-gradient(135deg,var(--azul),var(--azul-claro));
+    color:#fff;
+    padding:2.2rem 1.5rem;
+    text-align:center;
+  }
+  header h1{margin:0 0 .3rem;font-size:2rem;}
+  header p{margin:0;opacity:.9;}
+  nav{
+    background:#fff;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:.5rem;
+    padding:.8rem;
+    position:sticky;
+    top:0;
+    box-shadow:0 2px 6px rgba(0,0,0,.08);
+    z-index:100;
+  }
+  nav a{
+    text-decoration:none;
+    color:var(--azul);
+    font-weight:600;
+    padding:.5rem .9rem;
+    border-radius:20px;
+    font-size:.85rem;
+    border:1px solid var(--azul-claro);
+    transition:.2s;
+  }
+  nav a:hover{background:var(--azul-claro);color:#fff;}
+  main{max-width:980px;margin:0 auto;padding:1.5rem;}
+  section{
+    background:#fff;
+    border-radius:14px;
+    padding:1.8rem;
+    margin-bottom:2rem;
+    box-shadow:0 3px 10px rgba(0,0,0,.06);
+    scroll-margin-top:80px;
+  }
+  h2{
+    color:var(--azul);
+    border-bottom:3px solid var(--dorado);
+    padding-bottom:.5rem;
+    font-size:1.5rem;
+  }
+  h3{color:var(--azul-claro);margin-top:1.6rem;}
+  h4{color:var(--gris);margin-bottom:.3rem;}
+  .concepto{
+    background:#eef3fb;
+    border-left:5px solid var(--azul-claro);
+    padding:.9rem 1.1rem;
+    border-radius:8px;
+    margin:.8rem 0 1.2rem;
+  }
+  .concepto b{color:var(--azul);}
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:1rem 0 1.6rem;
+    font-size:.95rem;
+  }
+  th,td{
+    border:1px solid #dcdcdc;
+    padding:.55rem .7rem;
+    text-align:left;
+  }
+  th{background:var(--azul);color:#fff;}
+  tr:nth-child(even){background:#f4f7fb;}
+  .ejemplo-box{
+    background:#fff8ea;
+    border:1px dashed var(--dorado);
+    border-radius:8px;
+    padding:.8rem 1rem;
+    margin:.7rem 0;
+    font-size:.95rem;
+  }
+  .grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+  }
+  @media (max-width:700px){.grid2{grid-template-columns:1fr;}}
+  .video-wrap{
+    position:relative;
+    padding-bottom:56.25%;
+    height:0;
+    overflow:hidden;
+    border-radius:10px;
+    margin:1rem 0;
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
+  }
+  .video-wrap iframe{
+    position:absolute;top:0;left:0;width:100%;height:100%;border:0;
+  }
+  .dialogo{
+    background:#f0f6f0;
+    border-left:5px solid #4f8a5b;
+    border-radius:8px;
+    padding:1rem 1.2rem;
+    margin:.8rem 0;
+  }
+  .dialogo p{margin:.35rem 0;}
+  .dialogo .personaje{font-weight:700;color:#2c5c34;}
+  .traduccion{color:#666;font-style:italic;font-size:.9rem;}
+  .badge{
+    display:inline-block;
+    background:var(--dorado);
+    color:#fff;
+    padding:.2rem .6rem;
+    border-radius:12px;
+    font-size:.75rem;
+    font-weight:700;
+    margin-bottom:.6rem;
+  }
+  ul{padding-left:1.3rem;}
+  li{margin-bottom:.35rem;}
+  .caracteristicas-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:.9rem;
+    margin:1rem 0;
+  }
+  .car-card{
+    background:#eef3fb;
+    border-radius:10px;
+    padding:1rem;
+    border-top:4px solid var(--azul-claro);
+  }
+  .car-card h4{margin-top:0;color:var(--azul);}
+  footer{
+    text-align:center;
+    padding:1.5rem;
+    color:#888;
+    font-size:.85rem;
+  }
+  .fuente{font-size:.8rem;color:#999;margin-top:-.5rem;}
+
+  /* ===== Ejercicios ===== */
+  .quiz{
+    background:#fbfaf6;
+    border:1px solid #e5e0d0;
+    border-radius:12px;
+    padding:1.2rem 1.3rem;
+    margin:1rem 0 1.6rem;
+  }
+  .quiz h4{
+    margin-top:0;
+    color:var(--azul);
+    font-size:1.05rem;
+  }
+  .question{
+    margin-bottom:1rem;
+    padding-bottom:.8rem;
+    border-bottom:1px solid #eee;
+  }
+  .question:last-of-type{border-bottom:none;}
+  .question p{margin:.2rem 0 .5rem;font-weight:600;}
+  .opciones label{
+    display:block;
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:8px;
+    padding:.5rem .8rem;
+    margin-bottom:.4rem;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .opciones label:hover{border-color:var(--azul-claro);}
+  .opciones input{margin-right:.5rem;}
+  label.correcta{background:#e7f6ea;border-color:var(--verde);}
+  label.incorrecta{background:#fbe9e7;border-color:var(--rojo);}
+  .btn-check{
+    background:var(--azul-claro);
+    color:#fff;
+    border:none;
+    padding:.6rem 1.3rem;
+    border-radius:20px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:.5rem;
+  }
+  .btn-check:hover{background:var(--azul);}
+  .btn-reset{
+    background:#eee;
+    color:#555;
+    border:none;
+    padding:.6rem 1.1rem;
+    border-radius:20px;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:.5rem;
+    margin-left:.5rem;
+  }
+  .btn-reset:hover{background:#ddd;}
+  .resultado{
+    margin-top:.8rem;
+    font-weight:700;
+    padding:.6rem .9rem;
+    border-radius:8px;
+    display:none;
+  }
+  .resultado.show{display:block;}
+  .resultado.bien{background:#e7f6ea;color:var(--verde);}
+  .resultado.regular{background:#fff4dd;color:#9a6b0c;}
+  .resultado.mal{background:#fbe9e7;color:var(--rojo);}
+
+  .fill-row{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    flex-wrap:wrap;
+    margin-bottom:.7rem;
+  }
+  .fill-row .palabra{
+    font-weight:700;
+    background:#eef3fb;
+    padding:.35rem .7rem;
+    border-radius:6px;
+    min-width:120px;
+    text-align:center;
+  }
+  .fill-row select{
+    padding:.4rem .6rem;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:.9rem;
+  }
+  .fill-row .icono{font-weight:700;width:22px;text-align:center;}
+
+  .match-row{
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    flex-wrap:wrap;
+    margin-bottom:.6rem;
+  }
+  .match-row .izq{
+    font-weight:700;
+    background:#eef3fb;
+    padding:.35rem .7rem;
+    border-radius:6px;
+    min-width:140px;
+  }
+  .match-row select{
+    padding:.4rem .6rem;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:.9rem;
+    flex:1;
+    min-width:180px;
+  }
+  .match-row .icono{font-weight:700;width:22px;text-align:center;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Ñe'ẽtekuaa Guaraní</h1>
+  <p>Guía de estudio para el parcial — Hispanismos, sinónimos, antónimos, parónimos, homónimos, fonética y folklore</p>
+</header>
+
+<nav>
+  <a href="#tema1">1. Hispanismos y afines</a>
+  <a href="#tema2">2. Karai Norte</a>
+  <a href="#tema3">3. Diptongos/Triptongos</a>
+  <a href="#tema4">4. Diálogos</a>
+  <a href="#tema5">5. Folklore</a>
+  <a href="#ejercicios">✏️ Ejercicios</a>
+</nav>
+
+<main>
+
+<!-- TEMA 1 -->
+<section id="tema1">
+  <h2>1. Hispanismos, sinónimos, antónimos, parónimos y homónimos</h2>
+
+  <h3>Hispanismos (Ñe'ẽ oúva España ñe'ẽgui)</h3>
+  <div class="concepto">
+    <b>Definición:</b> Los hispanismos son vocablos que provienen del español y que, al incorporarse al idioma guaraní, sufren cambios fonéticos para adaptarse al sistema de sonidos guaraní. Esto ocurre porque el guaraní no posee ciertos sonidos del español (como la "l", la "f", la "d", o los grupos consonánticos complejos), entonces las palabras se "guaranizan": se simplifican, se nasalizan o se les agregan/quitan sonidos. Este fenómeno es prueba de contacto lingüístico entre dos lenguas que convivieron durante siglos en el mismo territorio, un ejemplo claro del <b>bilingüismo paraguayo</b>.
+  </div>
+  <p>Por qué pasa esto: el español trajo objetos y conceptos nuevos (ropa, muebles, animales domésticos, religión) que no existían en la cultura guaraní previa a la colonización, entonces el idioma tuvo que "tomar prestada" la palabra española y adaptarla a su propia fonética. Por ejemplo, la "b" y la "v" españolas suelen convertirse, la "l" española cambia a "r" y las palabras que terminan en consonante en español, en guaraní tienden a llevar una vocal nasal final.</p>
+  <table>
+    <tr><th>Guaraní</th><th>Español</th><th>Guaraní</th><th>Español</th></tr>
+    <tr><td>Votõ</td><td>Botón</td><td>Sapatu</td><td>Zapato</td></tr>
+    <tr><td>Merõ</td><td>Melón</td><td>Vosa</td><td>Bolsa</td></tr>
+    <tr><td>Sandia</td><td>Sandía</td><td>Aramirõ</td><td>Almidón</td></tr>
+    <tr><td>Ovecha</td><td>Oveja</td><td>Mandi'o</td><td>Mandioca</td></tr>
+    <tr><td>Kavara</td><td>Cabra</td><td>Kesu</td><td>Queso</td></tr>
+    <tr><td>Aramboha</td><td>Almohada</td><td>Sevói</td><td>Cebolla</td></tr>
+    <tr><td>Kochõ</td><td>Colchón</td><td>Korasõ</td><td>Corazón</td></tr>
+    <tr><td>Savana</td><td>Sábana</td><td>Chicharõ</td><td>Chicharrón</td></tr>
+    <tr><td>Kahõ</td><td>Cajón</td><td>Vaka</td><td>Vaca</td></tr>
+    <tr><td>Kasõ</td><td>Calzón</td><td>Kurusu</td><td>Cruz</td></tr>
+    <tr><td>Kavaju</td><td>Caballo</td><td>Maína / Paíno</td><td>Madrina / Padrino</td></tr>
+    <tr><td>Kamiõ</td><td>Camión</td><td>Havõ</td><td>Jabón</td></tr>
+    <tr><td>Kora</td><td>Corral</td><td>Kamisa</td><td>Camisa</td></tr>
+  </table>
+  <div class="ejemplo-box">
+    <b>Fíjate el patrón:</b> "Cabra" → "Kavara" (la <i>b</i> pasa a <i>v</i>, la <i>l</i> no existe así que se adapta), "Botón" → "Votõ" (la sílaba final se nasaliza), "Camisa" → "Kamisa" (la <i>c</i> se escribe con <i>k</i> porque el guaraní no usa <i>c</i>). Esto no es un error de pronunciación: es la regla fonética de adaptación (préstamo lingüístico).
+  </div>
+
+  <h3>Sinónimos (Ñe'ẽ he'isejojáva)</h3>
+  <div class="concepto">
+    <b>Definición:</b> Son palabras que se escriben de manera diferente pero que comparten el mismo significado o uno muy similar. En guaraní, al igual que en español, sirven para enriquecer el vocabulario, evitar repeticiones y dar matices al mensaje (por ejemplo, un sinónimo puede ser más formal, más antiguo o más regional que otro).
+  </div>
+  <table>
+    <tr><th>Guaraní 1</th><th>Guaraní 2</th><th>Español</th></tr>
+    <tr><td>Inimbe</td><td>Tupa</td><td>Cama</td></tr>
+    <tr><td>Vare'a</td><td>Ñembyahýi</td><td>Hambre</td></tr>
+    <tr><td>Óga</td><td>Tapỹi</td><td>Casa</td></tr>
+    <tr><td>Tembi'u</td><td>Hi'upyrã</td><td>Comida</td></tr>
+    <tr><td>Vy'a</td><td>Tory</td><td>Alegría</td></tr>
+    <tr><td>Vy'a'ỹ</td><td>Ñembyasy</td><td>Tristeza</td></tr>
+    <tr><td>Mondaha</td><td>Popindá</td><td>Ladrón</td></tr>
+    <tr><td>Viru</td><td>Pirapire</td><td>Dinero</td></tr>
+    <tr><td>Japu</td><td>Gua'u</td><td>Mentira</td></tr>
+    <tr><td>Pa'i</td><td>Avare</td><td>Sacerdote</td></tr>
+    <tr><td>Tekove / Yvypóra</td><td>Ava</td><td>Persona</td></tr>
+    <tr><td>Añete</td><td>Teete</td><td>Cierto, verdadero</td></tr>
+  </table>
+  <div class="ejemplo-box"><b>Ejemplo en frase:</b> "Aháta che <b>óga</b>-pe" y "Aháta che <b>tapỹi</b>-pe" significan exactamente lo mismo: "Voy a ir a mi casa".</div>
+
+  <h3>Antónimos (Ñe'ẽ he'ise'avýva)</h3>
+  <div class="concepto">
+    <b>Definición:</b> Son palabras que se escriben de forma distinta y cuyo significado es opuesto o contrario. Se usan para expresar contrastes, comparaciones y describir cualidades opuestas de personas, objetos o acciones.
+  </div>
+  <div class="grid2">
+    <table>
+      <tr><th>Guaraní</th><th>Español</th></tr>
+      <tr><td>Yvate – Karape</td><td>Alto – Bajo</td></tr>
+      <tr><td>Porã – Vai</td><td>Lindo – Feo</td></tr>
+      <tr><td>Kyra – Piru</td><td>Gordo – Flaco</td></tr>
+      <tr><td>Mbegue – Pya'e</td><td>Despacio – Rápido</td></tr>
+      <tr><td>Puku – Mbyky</td><td>Largo – Corto</td></tr>
+      <tr><td>Marangatu – Ñaña</td><td>Bueno – Malo</td></tr>
+      <tr><td>Tuicha – Michĩ</td><td>Grande – Pequeño</td></tr>
+      <tr><td>Aky – Aju</td><td>Verde – Maduro</td></tr>
+    </table>
+    <table>
+      <tr><th>Guaraní</th><th>Español</th></tr>
+      <tr><td>Nandi – Henyhẽ</td><td>Vacío – Lleno</td></tr>
+      <tr><td>Hatã – Hu'ũ</td><td>Duro – Blando</td></tr>
+      <tr><td>Kyre'ỹ – Ate'ỹ</td><td>Guapo – Perezoso</td></tr>
+      <tr><td>Pyahu – Tuja</td><td>Nuevo – Viejo</td></tr>
+      <tr><td>Morotĩ – Hũ</td><td>Blanco – Negro</td></tr>
+      <tr><td>Vevui – Pohýi</td><td>Liviano – Pesado</td></tr>
+      <tr><td>Ky'a – Potĩ</td><td>Sucio – Limpio</td></tr>
+      <tr><td>Jupi – Guejy</td><td>Subir – Bajar</td></tr>
+    </table>
+  </div>
+  <div class="ejemplo-box"><b>Ejemplo en frase:</b> "Pe óga <b>ipuku</b>" (esa casa es larga) frente a "Pe óga <b>imbyky</b>" (esa casa es corta).</div>
+
+  <h3>Parónimos (Ñe'ẽ ojojoguanungáva)</h3>
+  <div class="concepto">
+    <b>Definición:</b> Son palabras que se parecen mucho en su escritura y en su pronunciación (a veces se diferencian solo por una tilde, una nasal o una letra), pero cuyo significado es completamente distinto. En guaraní son especialmente importantes porque la <b>nasalidad</b> y el <b>acento gráfico</b> cambian por completo el sentido de la palabra — un error de tilde puede cambiar "diente" por "picante".
+  </div>
+  <table>
+    <tr><th>Palabra</th><th>Significado</th><th>Palabra</th><th>Significado</th></tr>
+    <tr><td>Pytã</td><td>Rojo</td><td>Pyta</td><td>Talón</td></tr>
+    <tr><td>Mbói</td><td>Serpiente</td><td>Mboi</td><td>Desvestir</td></tr>
+    <tr><td>Tái</td><td>Picante</td><td>Tãi</td><td>Diente</td></tr>
+    <tr><td>Tai</td><td>Letra</td><td>Okẽ</td><td>Puerta</td></tr>
+    <tr><td>Oke</td><td>Duerme</td><td>Aky</td><td>Verde, inmaduro</td></tr>
+    <tr><td>Akỹ</td><td>Mojado</td><td>Kua</td><td>Agujero</td></tr>
+    <tr><td>Ku'a</td><td>Cintura</td><td>Kuã</td><td>Dedo</td></tr>
+    <tr><td>Sái</td><td>Vestido</td><td>Sa'i</td><td>Poco</td></tr>
+    <tr><td>Poha</td><td>Quinto</td><td>Pohã</td><td>Remedio</td></tr>
+    <tr><td>Pytũ</td><td>Oscuridad</td><td>Pytu</td><td>Aliento</td></tr>
+    <tr><td>Ñembo'y</td><td>Pararse</td><td>Ñembo'e</td><td>Rezo, rezar</td></tr>
+  </table>
+  <div class="ejemplo-box"><b>Ejemplo clave:</b> "Mbói ojeity" (la serpiente se tiró) suena casi igual que "Mboi ojeity" pero <i>mbói</i> es "serpiente" y <i>mboi</i> es "desvestir" — la tilde en la "o" es la que diferencia todo el sentido.</div>
+
+  <h3>Homónimos (Ñe'ẽ herajojáva)</h3>
+  <div class="concepto">
+    <b>Definición:</b> Son palabras que se escriben exactamente igual, pero tienen significados distintos según el contexto de la oración. A diferencia de los parónimos (que solo se parecen), en los homónimos la escritura es idéntica; lo que cambia es el uso y el contexto.
+  </div>
+  <table>
+    <tr><th>Palabra</th><th>Significado 1</th><th>Significado 2</th></tr>
+    <tr><td>Po</td><td>Mano</td><td>Saltar / Cinco</td></tr>
+    <tr><td>Jasy</td><td>Mes</td><td>Luna</td></tr>
+    <tr><td>Pyta</td><td>Talón</td><td>Quedar(se)</td></tr>
+    <tr><td>A</td><td>Fruta</td><td>Caerse</td></tr>
+    <tr><td>Ty</td><td>Echar</td><td>Orina</td></tr>
+    <tr><td>Ju</td><td>Venir</td><td>Aguja</td></tr>
+    <tr><td>Kaigue</td><td>Perezoso</td><td>Quemado</td></tr>
+    <tr><td>Py</td><td>Pie</td><td>Ancho</td></tr>
+    <tr><td>Ke</td><td>Dormir</td><td>Entrar</td></tr>
+    <tr><td>Aju</td><td>Vengo</td><td>Maduro</td></tr>
+    <tr><td>Guasu</td><td>Grande</td><td>Venado</td></tr>
+  </table>
+  <div class="ejemplo-box"><b>Ejemplo con contexto:</b> "Che <b>po</b> michĩmi" (mi mano es pequeña) vs. "Opo yvate umi mitã" (esos niños saltan alto). Es la misma palabra "po", pero solo el contexto de la frase revela cuál es el significado correcto.</div>
+</section>
+
+<!-- TEMA 2 -->
+<section id="tema2">
+  <h2>2. Karai Norte — Diálogos</h2>
+  <span class="badge">Cortometraje paraguayo (2009)</span>
+  <div class="concepto">
+    <b>Contexto:</b> <i>Karai Norte</i> es un cortometraje paraguayo dirigido por Marcelo Martinessi, hablado íntegramente en guaraní, basado en el cuento <i>"Arribeño del Norte"</i> de Carlos Villagra Marsal. La historia está ambientada en las Lagunas Saladas del Chaco paraguayo, alrededor de la <b>Revolución de 1947</b> (la guerra civil paraguaya, también llamada "revolución de los py nandi"). Ganó el AXN Film Festival y fue el primer cortometraje paraguayo exhibido en el Berlinale Talents (2015). La traducción al guaraní actualizado utilizada en la obra es de Tadeo Zarratea.</div>
+  <p>El corto retrata el encuentro casual entre una anciana que vive sola en un rancho humilde del Chaco (interpretada por Lidia viuda de Cuevas) y un jinete solitario, un arriero curtido por los caminos (interpretado por Arturo Fleitas). Ambos personajes, a través de un diálogo íntegramente en guaraní, van revelando fragmentos de un pasado violento vinculado a la guerra civil, que ambos intentan olvidar. El "Karai" del título hace referencia al trato respetuoso ("señor") con el que la anciana se dirige al viajero, mientras el jinete la llama "che sy" (mi madre/señora), una fórmula de respeto típica del guaraní paraguayo hacia las personas mayores.</p>
+
+  <h3>Video del cortometraje</h3>
+  <div class="video-wrap">
+    <iframe src="https://www.youtube.com/embed/nnBnoOgTwz0" title="Karai Norte" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </div>
+
+  <h3>Fragmento del diálogo (guaraní jopara)</h3>
+  <p class="fuente">Nota: el guion mezcla guaraní con castellano (jopara), típico del habla rural paraguaya de la época retratada.</p>
+  <div class="dialogo">
+    <p><span class="personaje">Mujer (kuña karai):</span> Eju katu che karai. Ja oimba'ma la nde rembi'u rã. Ape nte na ta karu.</p>
+    <p class="traduccion">Traducción aproximada: "Venga pues, señor. Ya está lista su comida. Aquí nomás vamos a comer."</p>
+    <p><span class="personaje">Jinete (che karai):</span> Hata itereiko pe Norte vaí ha ipytu akú.</p>
+    <p class="traduccion">Traducción aproximada: "Muy fuerte está ese viento del Norte y su aliento es caliente."</p>
+    <p><span class="personaje">Mujer:</span> Mamo gui piko reju, che karai?</p>
+    <p class="traduccion">Traducción aproximada: "¿De dónde viene usted, señor?"</p>
+  </div>
+  <div class="ejemplo-box">
+    <b>Para el parcial, fijate en:</b> el uso reiterado del vocativo de respeto <i>"che karai"</i> (mi señor) y <i>"che sy"</i> (mi madre/señora), el registro rural con mezcla de castellano y guaraní (jopara), y cómo el diálogo funciona como vehículo para revelar, poco a poco, la historia de violencia de la guerra civil de 1947 sin narración explícita — todo se cuenta a través del habla de los dos personajes.
+  </div>
+
+  <h3>Ficha técnica rápida</h3>
+  <table>
+    <tr><th>Dato</th><th>Detalle</th></tr>
+    <tr><td>Director</td><td>Marcelo Martinessi</td></tr>
+    <tr><td>Basado en</td><td>"Arribeño del Norte", cuento de Carlos Villagra Marsal</td></tr>
+    <tr><td>Año</td><td>2009</td></tr>
+    <tr><td>Idioma</td><td>Guaraní (íntegro)</td></tr>
+    <tr><td>Locación</td><td>Lagunas Saladas / Laguna Capitán, Chaco paraguayo</td></tr>
+    <tr><td>Contexto histórico</td><td>Revolución paraguaya de 1947</td></tr>
+    <tr><td>Duración</td><td>19 minutos</td></tr>
+  </table>
+</section>
+
+<!-- TEMA 3 -->
+<section id="tema3">
+  <h2>3. Diptongos, triptongos y adiptongos (Pu'ae aty)</h2>
+  <div class="concepto">
+    <b>Pu'ae aty</b> significa "grupos vocálicos". En guaraní, cuando dos o más vocales aparecen juntas dentro de una palabra, pueden comportarse de tres maneras distintas al momento de dividir en sílabas: formando <b>diptongo</b>, <b>triptongo</b> o <b>adiptongo</b>. Distinguir estos grupos es clave para separar correctamente en sílabas (silabeo) y para pronunciar bien el idioma.
+  </div>
+
+  <h3>Diptongo (Pukõi)</h3>
+  <p>Ocurre cuando <b>dos vocales</b> se encuentran juntas dentro de <b>una misma sílaba</b> y se pronuncian en un solo golpe de voz, sin separarse.</p>
+  <div class="ejemplo-box">
+    <b>Ejemplos:</b> Ryguasu = ry–gua–su · Mokõi = mo–kõi · Jogua = jo–gua<br>
+    Otros ejemplos posibles: <i>guarani, hoi, kuã</i> — en todos estos casos las dos vocales permanecen juntas dentro de la misma sílaba.
+  </div>
+
+  <h3>Triptongo (Puapy)</h3>
+  <p>Ocurre cuando <b>tres vocales</b> se encuentran juntas dentro de <b>una misma sílaba</b>, pronunciándose también en un solo golpe de voz.</p>
+  <div class="ejemplo-box">
+    <b>Ejemplos:</b> Guaikuru = guai–ku–ru · Kuãirũ = kuãi–rũ · Tuguái = tu–guái<br>
+    El triptongo es menos frecuente que el diptongo, pero aparece sobre todo en palabras que combinan una semivocal (i, u) al inicio o al final del grupo con una vocal fuerte en el medio.
+  </div>
+
+  <h3>Adiptongo (Pukõi'ỹ)</h3>
+  <p>Ocurre cuando <b>dos vocales fuertes</b> se encuentran juntas y, en lugar de unirse en una sílaba, deben <b>separarse obligatoriamente</b> formando sílabas distintas. Lo mismo sucede cuando una vocal fuerte está al lado de una vocal débil y esta última lleva el acento (tilde): en ese caso también se separan.</p>
+  <div class="ejemplo-box">
+    <b>Ejemplos:</b> Arai = a–ra–i · Poapy = po–a–py · Kuñataĩ = ku–ña–ta–ĩ<br>
+    Fijate que en "Kuñataĩ" la "a" y la "ĩ" no se juntan en una sola sílaba porque la "ĩ" lleva tilde (acentuada), entonces la regla obliga a separarlas: eso es lo que la diferencia de un diptongo.
+  </div>
+
+  <h3>Resumen comparativo</h3>
+  <table>
+    <tr><th>Tipo</th><th>Cantidad de vocales</th><th>¿Se separan?</th><th>Ejemplo</th></tr>
+    <tr><td>Diptongo</td><td>2</td><td>No, van juntas en la misma sílaba</td><td>Mo-kõi</td></tr>
+    <tr><td>Triptongo</td><td>3</td><td>No, van juntas en la misma sílaba</td><td>Kuãi-rũ</td></tr>
+    <tr><td>Adiptongo</td><td>2 (fuertes, o fuerte+débil tildada)</td><td>Sí, se separan en sílabas distintas</td><td>A-ra-i</td></tr>
+  </table>
+</section>
+
+<!-- TEMA 4 -->
+<section id="tema4">
+  <h2>4. Algunos diálogos de las lecturas copiadas</h2>
+  <div class="concepto">
+    Estos son ejemplos de diálogos cortos típicos de las lecciones de saludo y presentación en guaraní, del tipo que suele copiarse en las lecturas de clase. Sirven para repasar fórmulas de cortesía, el vocativo de respeto (<i>karai / kuñakarai</i>) y las preguntas básicas de identidad.
+  </div>
+
+  <h3>Diálogo 1 — Saludo formal</h3>
+  <div class="dialogo">
+    <p><span class="personaje">Juan:</span> ¡Mba'éichapa karai!</p>
+    <p class="traduccion">¿Cómo está, señor?</p>
+    <p><span class="personaje">Pedro:</span> Iporãnte, ¿ha nde?</p>
+    <p class="traduccion">Bien, ¿y usted?</p>
+    <p><span class="personaje">Juan:</span> Ha iporãnte avei.</p>
+    <p class="traduccion">Y también estoy bien.</p>
+  </div>
+
+  <h3>Diálogo 2 — Preguntar el nombre</h3>
+  <div class="dialogo">
+    <p><span class="personaje">Juan:</span> Mba'éichapa nde réra?</p>
+    <p class="traduccion">¿Cómo se llama / cuál es tu nombre?</p>
+    <p><span class="personaje">Pedro:</span> Che réra ha'e Pedro, ¿ha nde?</p>
+    <p class="traduccion">Mi nombre es Pedro, ¿y el tuyo?</p>
+    <p><span class="personaje">Juan:</span> Che ha'e Juan.</p>
+    <p class="traduccion">Yo soy Juan.</p>
+  </div>
+
+  <h3>Diálogo 3 — Saludo según el momento del día</h3>
+  <div class="dialogo">
+    <p><span class="personaje">A:</span> Mba'éichapa neko'ẽ karai?</p>
+    <p class="traduccion">¿Cómo amaneció, señor?</p>
+    <p><span class="personaje">B:</span> Iporãnte avei, ¿ha nde?</p>
+    <p class="traduccion">Bien también, ¿y usted?</p>
+    <p><span class="personaje">A:</span> Mba'éichapa nde ka'aru, kuñakarai?</p>
+    <p class="traduccion">¿Cómo está esta tarde, señora?</p>
+  </div>
+  <div class="ejemplo-box">
+    <b>Vocabulario clave para el parcial:</b> Ko'ẽ (amanecer) · Ka'aru (tarde) · Pyhare (noche) · Karai (señor) · Kuñakarai (señora) · Mba'éichapa (¿cómo está / cómo te va?) · Iporãnte (estoy bien) · Réra (nombre).
+  </div>
+</section>
+
+<!-- TEMA 5 -->
+<section id="tema5">
+  <h2>5. Características del folklore</h2>
+  <div class="concepto">
+    <b>Folklore</b> (Tetãma arandu – Tavarandu – Tetãkuaa, "sabiduría del pueblo") es una palabra anglosajona formada por "folk" (pueblo, vulgo) y "lore" (saber, ciencia). Es el estudio científico —parte de la antropología cultural— del hecho cultural de un pueblo. El término fue propuesto por el arqueólogo inglés <b>William John Thoms</b> en una carta dirigida a la revista londinense <i>"The Athenaeum"</i> el 12 de agosto de 1846, bajo el seudónimo de Ambrose Merton, para designar tradiciones, creencias, costumbres, mitos, leyendas, canciones, proverbios y supersticiones del pueblo. En 1878 se fundó la <i>Folk-lore Society</i>, primera institución científica dedicada a su estudio.
+  </div>
+  <p>En Paraguay, el folklore se manifiesta preferentemente en el idioma guaraní, dado que este concentra buena parte de las tradiciones orales, creencias y costumbres transmitidas de generación en generación.</p>
+
+  <h3>Las cinco características principales</h3>
+  <div class="caracteristicas-grid">
+    <div class="car-card">
+      <h4>Tradicional</h4>
+      <p>Se hereda de los antepasados y permanece vigente. Se transmite en forma espontánea y oral a través de las generaciones como hecho cultural.</p>
+    </div>
+    <div class="car-card">
+      <h4>Funcional</h4>
+      <p>Cumple una función concreta: es utilitario y sirve para algo, por ejemplo alegrar, distraer o instruir.</p>
+    </div>
+    <div class="car-card">
+      <h4>Anónimo</h4>
+      <p>Su autor es desconocido; nadie puede reclamar la creación de un mito, una leyenda o una copla popular.</p>
+    </div>
+    <div class="car-card">
+      <h4>Espontáneo</h4>
+      <p>Surge de la circunstancia y de las situaciones cotidianas, apareciendo en cualquier momento, incluso el menos esperado.</p>
+    </div>
+    <div class="car-card">
+      <h4>Vulgar</h4>
+      <p>Pertenece a la gente común, al vulgo — no a una élite intelectual o artística formal.</p>
+    </div>
+  </div>
+
+  <div class="ejemplo-box">
+    <b>Dos condiciones adicionales que suelen pedirse en el examen:</b> para que un hecho se considere folklórico, además de cumplir las características de arriba, debe (1) haber sido producido por el pueblo en el anonimato, con aporte colectivo de la gente, y (2) haber arraigado en el pueblo, superando la prueba del tiempo sin desaparecer en su esencia. También se agregan como rasgos válidos: ser popular, colectivo, empírico, y estar marcado por la oralidad, el anonimato, la localización y el transvasamiento (paso de una generación o región a otra).
+  </div>
+
+  <h3>Clasificación del folklore paraguayo</h3>
+  <table>
+    <tr><th>Tipo</th><th>Guaraní</th><th>Incluye</th></tr>
+    <tr><td>Folclore espiritual</td><td>Apytu'ũ rehegua tavarandu</td><td>Artes, creencias, supersticiones, mitos, leyendas, saber popular, juegos</td></tr>
+    <tr><td>Folclore material</td><td>Mba'e'apo rehegua tavarandu</td><td>Recolección, caza y pesca, ganadería, agricultura, cestería, maderas, fibras y plumas</td></tr>
+    <tr><td>Folclore sociológico</td><td>Ava'aty rehegua tavarandu</td><td>Lenguaje, usos y costumbres, fiestas y ceremonias</td></tr>
+  </table>
+
+  <h3>Ejemplos concretos de hechos folklóricos paraguayos</h3>
+  <ul>
+    <li><b>Mitos:</b> Pora, Luisõ, Ao Ao, Mbói Tu'ĩ, Jasy Jatere, Moñãi, Kurupí, Pombéro, Teju Jagua.</li>
+    <li><b>Leyendas:</b> Tupãsy Ka'akupe, Lago Ypacaraí, Ykua Bolaños, Ñanduti, Kurusu Isabel, Ypaka'a.</li>
+    <li><b>Creencias:</b> se cree que si una mujer tiene siete hijos varones seguidos, el último se convierte en Luisõ; o que comer leche sobre mango puede resultar mortal.</li>
+    <li><b>Supersticiones:</b> no se debe barrer la casa si un familiar viaja lejos; cruzarse con un zorro (aguara) en el camino significa mala suerte.</li>
+    <li><b>Juegos tradicionales:</b> trompo, pandorga, tikichuela, valita kora, muñeca, pelota.</li>
+    <li><b>Otro dato relevante (visto en "Karai Norte"):</b> también se considera un hecho folklórico de proyección cuando una tradición se traslada de su lugar de origen a otro medio, como el cine — el cortometraje analizado en el punto 2 es, en sí mismo, un ejemplo de cómo el folklore lingüístico y narrativo guaraní se traslada al lenguaje audiovisual.</li>
+  </ul>
+</section>
+
+<!-- EJERCICIOS -->
+<section id="ejercicios">
+  <h2>✏️ Ejercicios didácticos</h2>
+  <div class="concepto">
+    Resolvé cada ejercicio y presioná <b>"Comprobar"</b> para ver tu resultado al instante. Las respuestas correctas se marcan en verde y las incorrectas en rojo. Podés usar <b>"Reiniciar"</b> para volver a intentarlo.
+  </div>
+
+  <h3>🔵 Sinónimos — Elegí la palabra que significa lo mismo</h3>
+  <div class="quiz" id="quiz-sinonimos">
+    <div class="question" data-correct="1">
+      <p>1. ¿Cuál es sinónimo de <b>"Óga"</b> (casa)?</p>
+      <div class="opciones">
+        <label><input type="radio" name="s1" value="0"> Viru</label>
+        <label><input type="radio" name="s1" value="1"> Tapỹi</label>
+        <label><input type="radio" name="s1" value="2"> Vare'a</label>
+      </div>
+    </div>
+    <div class="question" data-correct="2">
+      <p>2. ¿Cuál es sinónimo de <b>"Vy'a"</b> (alegría)?</p>
+      <div class="opciones">
+        <label><input type="radio" name="s2" value="0"> Ñembyasy</label>
+        <label><input type="radio" name="s2" value="1"> Mondaha</label>
+        <label><input type="radio" name="s2" value="2"> Tory</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>3. ¿Cuál es sinónimo de <b>"Japu"</b> (mentira)?</p>
+      <div class="opciones">
+        <label><input type="radio" name="s3" value="0"> Gua'u</label>
+        <label><input type="radio" name="s3" value="1"> Pa'i</label>
+        <label><input type="radio" name="s3" value="2"> Teete</label>
+      </div>
+    </div>
+    <div class="question" data-correct="1">
+      <p>4. ¿Cuál es sinónimo de <b>"Viru"</b> (dinero)?</p>
+      <div class="opciones">
+        <label><input type="radio" name="s4" value="0"> Avare</label>
+        <label><input type="radio" name="s4" value="1"> Pirapire</label>
+        <label><input type="radio" name="s4" value="2"> Popindá</label>
+      </div>
+    </div>
+    <div class="question" data-correct="2">
+      <p>5. ¿Cuál es sinónimo de <b>"Ava"</b> (persona)?</p>
+      <div class="opciones">
+        <label><input type="radio" name="s5" value="0"> Añete</label>
+        <label><input type="radio" name="s5" value="1"> Mbo'i</label>
+        <label><input type="radio" name="s5" value="2"> Yvypóra</label>
+      </div>
+    </div>
+    <button class="btn-check" onclick="checkQuiz('quiz-sinonimos')">Comprobar</button>
+    <button class="btn-reset" onclick="resetQuiz('quiz-sinonimos')">Reiniciar</button>
+    <div class="resultado" id="quiz-sinonimos-resultado"></div>
+  </div>
+
+  <h3>🟠 Antónimos — Elegí el opuesto correcto</h3>
+  <div class="quiz" id="quiz-antonimos">
+    <div class="question" data-correct="2">
+      <p>1. El antónimo de <b>"Yvate"</b> (alto) es:</p>
+      <div class="opciones">
+        <label><input type="radio" name="a1" value="0"> Puku</label>
+        <label><input type="radio" name="a1" value="1"> Hatã</label>
+        <label><input type="radio" name="a1" value="2"> Karape</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>2. El antónimo de <b>"Kyra"</b> (gordo) es:</p>
+      <div class="opciones">
+        <label><input type="radio" name="a2" value="0"> Piru</label>
+        <label><input type="radio" name="a2" value="1"> Vai</label>
+        <label><input type="radio" name="a2" value="2"> Tuja</label>
+      </div>
+    </div>
+    <div class="question" data-correct="1">
+      <p>3. El antónimo de <b>"Pyahu"</b> (nuevo) es:</p>
+      <div class="opciones">
+        <label><input type="radio" name="a3" value="0"> Michĩ</label>
+        <label><input type="radio" name="a3" value="1"> Tuja</label>
+        <label><input type="radio" name="a3" value="2"> Hu'ũ</label>
+      </div>
+    </div>
+    <div class="question" data-correct="2">
+      <p>4. El antónimo de <b>"Ky'a"</b> (sucio) es:</p>
+      <div class="opciones">
+        <label><input type="radio" name="a4" value="0"> Nandi</label>
+        <label><input type="radio" name="a4" value="1"> Mbegue</label>
+        <label><input type="radio" name="a4" value="2"> Potĩ</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>5. El antónimo de <b>"Jupi"</b> (subir) es:</p>
+      <div class="opciones">
+        <label><input type="radio" name="a5" value="0"> Guejy</label>
+        <label><input type="radio" name="a5" value="1"> Agui</label>
+        <label><input type="radio" name="a5" value="2"> Rire</label>
+      </div>
+    </div>
+    <button class="btn-check" onclick="checkQuiz('quiz-antonimos')">Comprobar</button>
+    <button class="btn-reset" onclick="resetQuiz('quiz-antonimos')">Reiniciar</button>
+    <div class="resultado" id="quiz-antonimos-resultado"></div>
+  </div>
+
+  <h3>🟣 Parónimos — Completá la oración con la palabra correcta</h3>
+  <div class="quiz" id="quiz-paronimos">
+    <div class="question" data-correct="1">
+      <p>1. "Pe so'o ha'e ___" (esa carne es picante):</p>
+      <div class="opciones">
+        <label><input type="radio" name="p1" value="0"> Tãi</label>
+        <label><input type="radio" name="p1" value="1"> Tái</label>
+        <label><input type="radio" name="p1" value="2"> Tai</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>2. "Kuchara ipytã" quiere decir que la cuchara es de color:</p>
+      <div class="opciones">
+        <label><input type="radio" name="p2" value="0"> Rojo (Pytã)</label>
+        <label><input type="radio" name="p2" value="1"> Talón (Pyta)</label>
+        <label><input type="radio" name="p2" value="2"> Oscuro (Pytũ)</label>
+      </div>
+    </div>
+    <div class="question" data-correct="2">
+      <p>3. "Ambosako'i che ___" (me voy a desvestir):</p>
+      <div class="opciones">
+        <label><input type="radio" name="p3" value="0"> Mbói</label>
+        <label><input type="radio" name="p3" value="1"> Ku'a</label>
+        <label><input type="radio" name="p3" value="2"> Mboi</label>
+      </div>
+    </div>
+    <div class="question" data-correct="1">
+      <p>4. "Che raña ___ mba'e vai" (mi diente me duele):</p>
+      <div class="opciones">
+        <label><input type="radio" name="p4" value="0"> Tai</label>
+        <label><input type="radio" name="p4" value="1"> Tãi</label>
+        <label><input type="radio" name="p4" value="2"> Tái</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>5. "Ajogua ___ hague" (compré un remedio):</p>
+      <div class="opciones">
+        <label><input type="radio" name="p5" value="0"> Pohã</label>
+        <label><input type="radio" name="p5" value="1"> Poha</label>
+        <label><input type="radio" name="p5" value="2"> Pytu</label>
+      </div>
+    </div>
+    <button class="btn-check" onclick="checkQuiz('quiz-paronimos')">Comprobar</button>
+    <button class="btn-reset" onclick="resetQuiz('quiz-paronimos')">Reiniciar</button>
+    <div class="resultado" id="quiz-paronimos-resultado"></div>
+  </div>
+
+  <h3>🟢 Homónimos — Elegí el significado según el contexto</h3>
+  <div class="quiz" id="quiz-homonimos">
+    <div class="question" data-correct="0">
+      <p>1. "Che <b>po</b> michĩmi" — aquí "po" significa:</p>
+      <div class="opciones">
+        <label><input type="radio" name="h1" value="0"> Mano</label>
+        <label><input type="radio" name="h1" value="1"> Saltar</label>
+        <label><input type="radio" name="h1" value="2"> Cinco</label>
+      </div>
+    </div>
+    <div class="question" data-correct="1">
+      <p>2. "Osẽma <b>jasy</b>" — aquí "jasy" significa:</p>
+      <div class="opciones">
+        <label><input type="radio" name="h2" value="0"> Mes</label>
+        <label><input type="radio" name="h2" value="1"> Luna</label>
+        <label><input type="radio" name="h2" value="2"> Talón</label>
+      </div>
+    </div>
+    <div class="question" data-correct="1">
+      <p>3. "Nde róga <b>opyta</b> mombyry" — aquí "pyta" significa:</p>
+      <div class="opciones">
+        <label><input type="radio" name="h3" value="0"> Talón</label>
+        <label><input type="radio" name="h3" value="1"> Quedar</label>
+        <label><input type="radio" name="h3" value="2"> Rojo</label>
+      </div>
+    </div>
+    <div class="question" data-correct="1">
+      <p>4. "Ho'a chugui ko kuatia" — aquí "a" significa:</p>
+      <div class="opciones">
+        <label><input type="radio" name="h4" value="0"> Fruta</label>
+        <label><input type="radio" name="h4" value="1"> Caerse</label>
+        <label><input type="radio" name="h4" value="2"> Aguja</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>5. "Pe guasu oñani pya'e" — aquí "guasu" significa:</p>
+      <div class="opciones">
+        <label><input type="radio" name="h5" value="0"> Venado</label>
+        <label><input type="radio" name="h5" value="1"> Grande</label>
+        <label><input type="radio" name="h5" value="2"> Aliento</label>
+      </div>
+    </div>
+    <button class="btn-check" onclick="checkQuiz('quiz-homonimos')">Comprobar</button>
+    <button class="btn-reset" onclick="resetQuiz('quiz-homonimos')">Reiniciar</button>
+    <div class="resultado" id="quiz-homonimos-resultado"></div>
+  </div>
+
+  <h3>🟡 Diptongos, triptongos y adiptongos — Clasificá cada palabra</h3>
+  <p>Elegí a qué grupo vocálico corresponde el segmento marcado en cada palabra.</p>
+  <div class="quiz" id="quiz-fonetica">
+    <div class="fill-row" data-correct="diptongo">
+      <span class="palabra">Mokõi</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <div class="fill-row" data-correct="triptongo">
+      <span class="palabra">Kuãirũ</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <div class="fill-row" data-correct="adiptongo">
+      <span class="palabra">Arai</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <div class="fill-row" data-correct="diptongo">
+      <span class="palabra">Ryguasu</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <div class="fill-row" data-correct="adiptongo">
+      <span class="palabra">Kuñataĩ</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <div class="fill-row" data-correct="triptongo">
+      <span class="palabra">Tuguái</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <div class="fill-row" data-correct="adiptongo">
+      <span class="palabra">Poapy</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <div class="fill-row" data-correct="diptongo">
+      <span class="palabra">Jogua</span>
+      <span class="icono">→</span>
+      <select>
+        <option value="">Elegí...</option>
+        <option value="diptongo">Diptongo</option>
+        <option value="triptongo">Triptongo</option>
+        <option value="adiptongo">Adiptongo</option>
+      </select>
+    </div>
+    <button class="btn-check" onclick="checkFonetica('quiz-fonetica')">Comprobar</button>
+    <button class="btn-reset" onclick="resetFonetica('quiz-fonetica')">Reiniciar</button>
+    <div class="resultado" id="quiz-fonetica-resultado"></div>
+  </div>
+
+  <h3>🟡 Silabeo — Separá correctamente en sílabas</h3>
+  <p>Elegí la opción con la separación silábica correcta según la regla de diptongo/triptongo/adiptongo.</p>
+  <div class="quiz" id="quiz-silabeo">
+    <div class="question" data-correct="1">
+      <p>1. Kuñataĩ</p>
+      <div class="opciones">
+        <label><input type="radio" name="sil1" value="0"> ku–ñataĩ</label>
+        <label><input type="radio" name="sil1" value="1"> ku–ña–ta–ĩ</label>
+        <label><input type="radio" name="sil1" value="2"> kuña–taĩ</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>2. Ryguasu</p>
+      <div class="opciones">
+        <label><input type="radio" name="sil2" value="0"> ry–gua–su</label>
+        <label><input type="radio" name="sil2" value="1"> ry–gu–a–su</label>
+        <label><input type="radio" name="sil2" value="2"> rygua–su</label>
+      </div>
+    </div>
+    <div class="question" data-correct="2">
+      <p>3. Guaikuru</p>
+      <div class="opciones">
+        <label><input type="radio" name="sil3" value="0"> gua–i–ku–ru</label>
+        <label><input type="radio" name="sil3" value="1"> gu–ai–ku–ru</label>
+        <label><input type="radio" name="sil3" value="2"> guai–ku–ru</label>
+      </div>
+    </div>
+    <div class="question" data-correct="1">
+      <p>4. Arai</p>
+      <div class="opciones">
+        <label><input type="radio" name="sil4" value="0"> a–rai</label>
+        <label><input type="radio" name="sil4" value="1"> a–ra–i</label>
+        <label><input type="radio" name="sil4" value="2"> ar–ai</label>
+      </div>
+    </div>
+    <div class="question" data-correct="0">
+      <p>5. Poapy</p>
+      <div class="opciones">
+        <label><input type="radio" name="sil5" value="0"> po–a–py</label>
+        <label><input type="radio" name="sil5" value="1"> poa–py</label>
+        <label><input type="radio" name="sil5" value="2"> po–apy</label>
+      </div>
+    </div>
+    <button class="btn-check" onclick="checkQuiz('quiz-silabeo')">Comprobar</button>
+    <button class="btn-reset" onclick="resetQuiz('quiz-silabeo')">Reiniciar</button>
+    <div class="resultado" id="quiz-silabeo-resultado"></div>
+  </div>
+
+</section>
+
+</main>
+
+<footer>
+  Guía de estudio elaborada para el parcial de Guaraní · Basada en apuntes de clase (Hispanismos, Sinónimos, Antónimos, Parónimos, Homónimos, Diptongo-Triptongo-Adiptongo y Folklore del Paraguay) y en información pública sobre el cortometraje "Karai Norte".
+</footer>
+
+<script>
+function checkQuiz(containerId){
+  const container = document.getElementById(containerId);
+  const questions = container.querySelectorAll('.question');
+  let correctCount = 0;
+  questions.forEach(q=>{
+    const correct = q.getAttribute('data-correct');
+    const inputs = q.querySelectorAll('input[type="radio"]');
+    let answered = false;
+    inputs.forEach(inp=>{
+      const label = inp.closest('label');
+      label.classList.remove('correcta','incorrecta');
+      if(inp.checked){
+        answered = true;
+        if(inp.value === correct){
+          label.classList.add('correcta');
+          correctCount++;
+        } else {
+          label.classList.add('incorrecta');
+        }
+      }
+    });
+    if(answered){
+      inputs.forEach(inp=>{
+        if(inp.value === correct){
+          inp.closest('label').classList.add('correcta');
+        }
+      });
+    }
+  });
+  const resultado = document.getElementById(containerId+'-resultado');
+  const total = questions.length;
+  resultado.classList.add('show');
+  resultado.classList.remove('bien','regular','mal');
+  if(correctCount === total){
+    resultado.classList.add('bien');
+    resultado.textContent = '¡Excelente! Respondiste bien las ' + correctCount + ' de ' + total + ' preguntas.';
+  } else if(correctCount >= total/2){
+    resultado.classList.add('regular');
+    resultado.textContent = 'Bien, pero podés mejorar: ' + correctCount + ' de ' + total + ' correctas.';
+  } else {
+    resultado.classList.add('mal');
+    resultado.textContent = 'Repasá de nuevo: ' + correctCount + ' de ' + total + ' correctas.';
+  }
+}
+
+function resetQuiz(containerId){
+  const container = document.getElementById(containerId);
+  container.querySelectorAll('input[type="radio"]').forEach(inp=>{
+    inp.checked = false;
+    inp.closest('label').classList.remove('correcta','incorrecta');
+  });
+  const resultado = document.getElementById(containerId+'-resultado');
+  resultado.classList.remove('show','bien','regular','mal');
+  resultado.textContent = '';
+}
+
+function checkFonetica(containerId){
+  const container = document.getElementById(containerId);
+  const rows = container.querySelectorAll('.fill-row');
+  let correctCount = 0;
+  rows.forEach(row=>{
+    const correct = row.getAttribute('data-correct');
+    const select = row.querySelector('select');
+    select.style.borderColor = '#ccc';
+    select.style.background = '#fff';
+    if(select.value === correct){
+      select.style.borderColor = 'var(--verde)';
+      select.style.background = '#e7f6ea';
+      correctCount++;
+    } else if(select.value !== ''){
+      select.style.borderColor = 'var(--rojo)';
+      select.style.background = '#fbe9e7';
+    }
+  });
+  const resultado = document.getElementById(containerId+'-resultado');
+  const total = rows.length;
+  resultado.classList.add('show');
+  resultado.classList.remove('bien','regular','mal');
+  if(correctCount === total){
+    resultado.classList.add('bien');
+    resultado.textContent = '¡Excelente! Clasificaste bien las ' + correctCount + ' de ' + total + ' palabras.';
+  } else if(correctCount >= total/2){
+    resultado.classList.add('regular');
+    resultado.textContent = 'Bien, pero podés mejorar: ' + correctCount + ' de ' + total + ' correctas.';
+  } else {
+    resultado.classList.add('mal');
+    resultado.textContent = 'Repasá de nuevo: ' + correctCount + ' de ' + total + ' correctas.';
+  }
+}
+
+function resetFonetica(containerId){
+  const container = document.getElementById(containerId);
+  container.querySelectorAll('select').forEach(sel=>{
+    sel.value = '';
+    sel.style.borderColor = '#ccc';
+    sel.style.background = '#fff';
+  });
+  const resultado = document.getElementById(containerId+'-resultado');
+  resultado.classList.remove('show','bien','regular','mal');
+  resultado.textContent = '';
+}
+</script>
+
+</body>
+</html>
